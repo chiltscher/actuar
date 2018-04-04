@@ -1,27 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const chalk_1 = require("chalk");
-const fs_1 = require("fs");
-const path_1 = require("path");
 const Actuar_1 = require("../Actuar");
+const ActuarLog_1 = require("./ActuarLog");
 class Logger {
     constructor(name) {
         this._name = 'logger';
         this._muted = false;
+        this._write = true;
         this._name = name;
     }
     mute() { this._muted = true; }
     unmute() { this._muted = false; }
-    static setGlobalLogfilesDir(dir) {
-        fs_1.exists(dir, exists => {
-            if (!exists) {
-                fs_1.mkdir(dir, err => {
-                    if (err)
-                        console.log(`Could not create directory for logfiles, using default instead`);
-                });
-            }
-        });
-    }
+    writable() { this._write = true; }
+    unwritable() { this._write = false; }
     get name() {
         return this._name;
     }
@@ -29,47 +20,70 @@ class Logger {
         return this._name.toUpperCase();
     }
     log(message) {
-        const timestamp = new Date().toLocaleTimeString();
-        const instance = this.$name;
-        const out = chalk_1.default.keyword('orange')(`[ ${timestamp} ] - ${instance} : ${message}`);
+        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.INFO)
+            return;
+        let log = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            message: message,
+            type: Actuar_1.LogType.Error
+        };
+        const aLog = new ActuarLog_1.ActuarLog(log);
         if (!this._muted)
-            console.log(out);
+            console.log(aLog.toString());
     }
     warn(message, line, file) {
-        const timestamp = new Date().toLocaleTimeString();
-        const instance = this.$name;
-        let error = '';
-        if (line && file) {
-            error = `(${file}:${line})`;
-        }
-        const out = chalk_1.default.yellow(`W! [ ${timestamp} ] - ${instance} : ${message} ${error}`);
+        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.WARN)
+            return;
+        let log = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            line: line,
+            file: file,
+            message: message,
+            type: Actuar_1.LogType.Error
+        };
+        const aLog = new ActuarLog_1.ActuarLog(log);
         if (!this._muted)
-            console.log(out);
+            console.log(aLog.toString());
     }
     error(message, line, file) {
-        const timestamp = new Date().toLocaleTimeString();
-        const instance = this.$name;
-        let error = '';
-        if (line && file) {
-            error = `(${file}:${line})`;
-        }
-        const out = chalk_1.default.red(`E! [ ${timestamp} ] - ${instance} : ${message} ${error}`);
+        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.ERROR)
+            return;
+        let log = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            line: line,
+            file: file,
+            message: message,
+            type: Actuar_1.LogType.Error
+        };
+        const aLog = new ActuarLog_1.ActuarLog(log);
         if (!this._muted)
-            console.log(out);
+            console.log(aLog.toString());
     }
     debug(message, line, file) {
-        if (Actuar_1.ENV.DEBUG) {
-            const timestamp = new Date().toLocaleTimeString();
-            const instance = this.$name;
-            let error = '';
-            if (line && file) {
-                error = `(${file}:${line})`;
-            }
-            const out = chalk_1.default.yellow(`E! [ ${timestamp} ] - ${instance} : ${message} ${error}`);
-            if (!this._muted)
-                console.log(out);
-        }
+        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.DEBUG || !Actuar_1.ENV.DEBUG)
+            return;
+        let log = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            line: line,
+            file: file,
+            message: message,
+            type: Actuar_1.LogType.Error
+        };
+        const aLog = new ActuarLog_1.ActuarLog(log);
+        if (!this._muted)
+            console.log(aLog.toString());
     }
 }
-Logger.globalLogfilesDir = path_1.join(__dirname, "logs");
 exports.Logger = Logger;

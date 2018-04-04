@@ -1,13 +1,12 @@
-/// <reference types="node" />
-import { PathLike } from 'fs';
 export declare class Logger {
     protected _name: string;
     protected _muted: boolean;
     mute(): void;
     unmute(): void;
-    protected static globalLogfilesDir: PathLike;
+    protected _write: boolean;
+    writable(): void;
+    unwritable(): void;
     constructor(name: string);
-    static setGlobalLogfilesDir(dir: PathLike): void;
     readonly name: string;
     private readonly $name;
     log(message: string): void;

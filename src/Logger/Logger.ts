@@ -1,7 +1,5 @@
-import chalk from 'chalk';
-import { exists, mkdir, PathLike } from 'fs';
-import { join } from 'path';
-import { ENV } from '../Actuar';
+import { ENV, IActuarLog, LogType, LogLevel } from '../Actuar';
+import { ActuarLog } from './ActuarLog';
 
 export class Logger {
     // protected static DBG: boolean = false;
@@ -9,23 +7,12 @@ export class Logger {
     protected _muted: boolean = false;
     public mute():void { this._muted = true }
     public unmute():void { this._muted = false }
-    protected static globalLogfilesDir: PathLike = join(__dirname, "logs");
+    protected _write: boolean = true;
+    public writable(): void { this._write = true }
+    public unwritable(): void { this._write = false }
 
     constructor(name: string) {
         this._name = name;
-    }
-
-    public static setGlobalLogfilesDir(dir: PathLike): void {
-        exists(dir, exists => {
-            if (!exists) {
-                mkdir(dir, err => {
-                    if (err)
-                        console.log(
-                            `Could not create directory for logfiles, using default instead`
-                        );
-                });
-            }
-        });
     }
 
     public get name(): string {
@@ -37,44 +24,64 @@ export class Logger {
     }
 
     public log(message: string): void {
-        const timestamp = new Date().toLocaleTimeString();
-        const instance = this.$name;
-        const out = chalk.keyword('orange')(`[ ${timestamp} ] - ${instance} : ${message}`);
-        if(!this._muted) console.log(out);
+        if(ENV.LOGLVL < LogLevel.INFO) return;
+        let log: IActuarLog = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            message: message,
+            type: LogType.Error
+        }
+        const aLog = new ActuarLog(log);
+        if (!this._muted) console.log(aLog.toString());
     }
 
     public warn(message: string, line?: number, file?: string): void {
-        const timestamp = new Date().toLocaleTimeString();
-        const instance = this.$name;
-        let error: string = '';
-        if (line && file) {
-            error = `(${file}:${line})`;
+        if (ENV.LOGLVL < LogLevel.WARN) return;
+        let log: IActuarLog = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            line: line,
+            file: file,
+            message: message,
+            type: LogType.Error
         }
-        const out = chalk.yellow(`W! [ ${timestamp} ] - ${instance} : ${message} ${error}`);
-        if(!this._muted) console.log(out);
+        const aLog = new ActuarLog(log);
+        if (!this._muted) console.log(aLog.toString());
     }
 
     public error(message: string, line?: number, file?: string): void {
-        const timestamp = new Date().toLocaleTimeString();
-        const instance = this.$name;
-        let error: string = '';
-        if (line && file) {
-            error = `(${file}:${line})`;
+        if (ENV.LOGLVL < LogLevel.ERROR) return;
+        let log : IActuarLog = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            line: line,
+            file: file,
+            message: message,
+            type: LogType.Error
         }
-        const out = chalk.red(`E! [ ${timestamp} ] - ${instance} : ${message} ${error}`);
-        if(!this._muted) console.log(out);
+        const aLog = new ActuarLog(log);
+        if(!this._muted) console.log(aLog.toString());
     }
 
     public debug(message: string, line?: number, file?: string): void {
-        if (ENV.DEBUG) {
-            const timestamp = new Date().toLocaleTimeString();
-            const instance = this.$name;
-            let error: string = '';
-            if (line && file) {
-                error = `(${file}:${line})`;
-            }
-            const out = chalk.yellow(`E! [ ${timestamp} ] - ${instance} : ${message} ${error}`);
-            if(!this._muted) console.log(out);
+        if (ENV.LOGLVL < LogLevel.DEBUG || !ENV.DEBUG) return;
+        let log: IActuarLog = {
+            muted: this._muted,
+            write: this._write,
+            instance: this.$name,
+            timestamp: new Date(),
+            line: line,
+            file: file,
+            message: message,
+            type: LogType.Error
         }
+        const aLog = new ActuarLog(log);
+        if (!this._muted) console.log(aLog.toString());
     }
 }
