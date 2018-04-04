@@ -1,8 +1,10 @@
 /// <reference types="node" />
 import { PathLike } from 'fs';
 export declare class Logger {
-    private static DEBUG;
     protected _name: string;
+    protected _muted: boolean;
+    mute(): void;
+    unmute(): void;
     protected static globalLogfilesDir: PathLike;
     constructor(name: string);
     static setGlobalLogfilesDir(dir: PathLike): void;
