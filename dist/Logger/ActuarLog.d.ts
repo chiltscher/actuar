@@ -12,5 +12,6 @@ declare class ActuarLog {
     constructor(log: IActuarLog);
     toJson(): IActuarLog;
     toString(): string;
+    toJsonString(): string;
 }
 export { ActuarLog };

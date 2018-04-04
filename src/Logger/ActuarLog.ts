@@ -59,6 +59,9 @@ class ActuarLog {
         return this.colorize(`[${ this.timestamp.toLocaleTimeString()}] - ${ this.instance } ${this.type.toUpperCase()} : ${ this.message } ${ error }`);
         // [ 08:20:23 ] - APP : Unexpected Data (/path/to/your/application.js:52)
     }
+    public toJsonString() : string {
+        return JSON.stringify(this.toJson());
+    }
 }
 
 export { ActuarLog }

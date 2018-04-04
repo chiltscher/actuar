@@ -1,5 +1,7 @@
 import { ENV, IActuarLog, LogType, LogLevel } from '../Actuar';
 import { ActuarLog } from './ActuarLog';
+import { appendFile } from 'fs';
+import { join } from 'path';
 
 export class Logger {
     // protected static DBG: boolean = false;
@@ -13,6 +15,11 @@ export class Logger {
 
     constructor(name: string) {
         this._name = name;
+    }
+    private static extension: string = ".aLog";
+    public static writeOut(log: ActuarLog) {
+        let FILE = join(ENV.DIR as string, new Date().toLocaleDateString()) + Logger.extension;
+        appendFile(FILE, log.toJsonString(),()=>{});
     }
 
     public get name(): string {
@@ -34,6 +41,7 @@ export class Logger {
             type: LogType.Error
         }
         const aLog = new ActuarLog(log);
+        if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
     }
 
@@ -50,6 +58,7 @@ export class Logger {
             type: LogType.Error
         }
         const aLog = new ActuarLog(log);
+        if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
     }
 
@@ -66,6 +75,7 @@ export class Logger {
             type: LogType.Error
         }
         const aLog = new ActuarLog(log);
+        if(this._write) Logger.writeOut(aLog);
         if(!this._muted) console.log(aLog.toString());
     }
 
@@ -82,6 +92,7 @@ export class Logger {
             type: LogType.Error
         }
         const aLog = new ActuarLog(log);
+        if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
     }
 }

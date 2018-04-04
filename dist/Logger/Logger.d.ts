@@ -1,3 +1,4 @@
+import { ActuarLog } from './ActuarLog';
 export declare class Logger {
     protected _name: string;
     protected _muted: boolean;
@@ -7,6 +8,8 @@ export declare class Logger {
     writable(): void;
     unwritable(): void;
     constructor(name: string);
+    private static extension;
+    static writeOut(log: ActuarLog): void;
     readonly name: string;
     private readonly $name;
     log(message: string): void;

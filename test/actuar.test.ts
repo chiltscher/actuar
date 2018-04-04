@@ -1,7 +1,18 @@
 import * as Actuar from "../src/Actuar";
 import { expect } from "chai"
+import { join, resolve } from "path";
 describe("Actuar Logger Test", () => {
     let Logger: Actuar.Logger;
+    const dirPath = resolve(join(__dirname, "..", "..", "logfiles"));
+
+    it("Should create an logfiles directory", (done) => {
+        Actuar.setLogfilesDir(dirPath).then(
+            () => {
+                expect(Actuar.getLogfilesDir()).to.equal(dirPath);
+                done();
+            });
+    });
+
     it("Should create an instance of a new logger", (done) => {
         Logger = new Actuar.Logger("Test-logger");
         done()

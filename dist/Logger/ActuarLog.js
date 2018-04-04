@@ -48,5 +48,8 @@ class ActuarLog {
         }
         return this.colorize(`[${this.timestamp.toLocaleTimeString()}] - ${this.instance} ${this.type.toUpperCase()} : ${this.message} ${error}`);
     }
+    toJsonString() {
+        return JSON.stringify(this.toJson());
+    }
 }
 exports.ActuarLog = ActuarLog;

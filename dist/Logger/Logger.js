@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Actuar_1 = require("../Actuar");
 const ActuarLog_1 = require("./ActuarLog");
+const fs_1 = require("fs");
+const path_1 = require("path");
 class Logger {
     constructor(name) {
         this._name = 'logger';
@@ -13,6 +15,10 @@ class Logger {
     unmute() { this._muted = false; }
     writable() { this._write = true; }
     unwritable() { this._write = false; }
+    static writeOut(log) {
+        let FILE = path_1.join(Actuar_1.ENV.DIR, new Date().toLocaleDateString()) + Logger.extension;
+        fs_1.appendFile(FILE, log.toJsonString(), () => { });
+    }
     get name() {
         return this._name;
     }
@@ -31,6 +37,8 @@ class Logger {
             type: Actuar_1.LogType.Error
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
+        if (this._write)
+            Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
     }
@@ -48,6 +56,8 @@ class Logger {
             type: Actuar_1.LogType.Error
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
+        if (this._write)
+            Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
     }
@@ -65,6 +75,8 @@ class Logger {
             type: Actuar_1.LogType.Error
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
+        if (this._write)
+            Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
     }
@@ -82,8 +94,11 @@ class Logger {
             type: Actuar_1.LogType.Error
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
+        if (this._write)
+            Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
     }
 }
+Logger.extension = ".aLog";
 exports.Logger = Logger;
