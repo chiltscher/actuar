@@ -1,6 +1,6 @@
 {
   "name": "actuar",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A logger that provides many options to log data and informations",
   "main": "./dist/Actuar.js",
   "scripts": {
