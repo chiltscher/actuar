@@ -32,7 +32,7 @@ export interface IActuarLog {
 }
 
 export namespace ENV {
-    export let REMOTE_IP: string = "";
+    export let REMOTE_IP: string = "localhost";
     export let REMOTE_PORT: number = 8989;
     export let LOCAL_PORT: number = 9090;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;

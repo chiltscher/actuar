@@ -12,12 +12,17 @@ class Transceiver {
             new Actuar_1.Logger("actuar").unwritable().error(`Transceiver-Server error ${err.stack}`);
             this.server.close();
         });
-        this.server.on('message', (msg, rinfo) => {
-            console.log(msg);
+        this.server.on('message', (msg) => {
+            let aLog = Actuar_1.ActuarLog.fromBuffer(msg);
+            let jLog = aLog.toJson();
+            if (jLog.write)
+                Actuar_1.Logger.writeOut(aLog);
+            if (!jLog.muted)
+                console.log(aLog.toString());
         });
         this.server.on('listening', () => {
             const address = this.server.address();
-            console.log(`server listening ${address.address}:${address.port}`);
+            new Actuar_1.Logger("actuar").unwritable().log(`server listening ${address.address}:${address.port}`);
         });
         this.server.bind(Actuar_1.ENV.LOCAL_PORT);
     }
@@ -25,4 +30,3 @@ class Transceiver {
 Transceiver.socket = dgram.createSocket('udp4');
 Transceiver.server = dgram.createSocket('udp4');
 exports.Transceiver = Transceiver;
-//# sourceMappingURL=Transceiver.js.map

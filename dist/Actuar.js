@@ -15,7 +15,7 @@ var LogLevel;
     LogLevel[LogLevel["WARN"] = 1] = "WARN";
     LogLevel[LogLevel["ERROR"] = 2] = "ERROR";
     LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
-    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR"; // Show all logs, inclusive actuar logs
+    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR";
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 var LogType;
 (function (LogType) {
@@ -26,7 +26,7 @@ var LogType;
 })(LogType = exports.LogType || (exports.LogType = {}));
 var ENV;
 (function (ENV) {
-    ENV.REMOTE_IP = "";
+    ENV.REMOTE_IP = "localhost";
     ENV.REMOTE_PORT = 8989;
     ENV.LOCAL_PORT = 9090;
     ENV.LOGLVL = LogLevel.ACTUAR;
@@ -76,4 +76,3 @@ function setLogfilesDir(dir) {
     });
 }
 exports.setLogfilesDir = setLogfilesDir;
-//# sourceMappingURL=Actuar.js.map

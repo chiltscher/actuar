@@ -16,7 +16,7 @@ class Transceiver {
             this.server.close();
         });
 
-        this.server.on('message', (msg, rinfo) => {
+        this.server.on('message', (msg) => {
             let aLog = ActuarLog.fromBuffer(msg);
             let jLog = aLog.toJson();
             if (jLog.write) Logger.writeOut(aLog);

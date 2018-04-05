@@ -7,7 +7,6 @@ const path_1 = require("path");
 const Actuar_2 = require("../Actuar");
 class Logger {
     constructor(name) {
-        // protected static DBG: boolean = false;
         this._name = 'logger';
         this._muted = false;
         this._write = true;
@@ -22,7 +21,7 @@ class Logger {
     unremote() { this._remote = false; return this; }
     static writeOut(log) {
         let FILE = path_1.join(Actuar_1.ENV.DIR, new Date().toLocaleDateString()) + Logger.extension;
-        fs_1.appendFile(FILE, log.toJsonString(), () => { });
+        fs_1.appendFile(FILE, log.toJsonString() + ",\r\n", () => { });
     }
     get name() {
         return this._name;
@@ -39,7 +38,7 @@ class Logger {
             instance: this.$name,
             timestamp: new Date(),
             message: message,
-            type: Actuar_1.LogType.Error
+            type: Actuar_1.LogType.Log
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
         if (this._remote)
@@ -60,7 +59,7 @@ class Logger {
             line: line,
             file: file,
             message: message,
-            type: Actuar_1.LogType.Error
+            type: Actuar_1.LogType.Warning
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
         if (this._remote)
@@ -100,7 +99,7 @@ class Logger {
             line: line,
             file: file,
             message: message,
-            type: Actuar_1.LogType.Error
+            type: Actuar_1.LogType.Debug
         };
         const aLog = new ActuarLog_1.ActuarLog(log);
         if (this._remote)
@@ -113,4 +112,3 @@ class Logger {
 }
 Logger.extension = ".aLog";
 exports.Logger = Logger;
-//# sourceMappingURL=Logger.js.map
