@@ -2,16 +2,20 @@ import { ENV, IActuarLog, LogType, LogLevel } from '../Actuar';
 import { ActuarLog } from './ActuarLog';
 import { appendFile } from 'fs';
 import { join } from 'path';
+import { Transceiver } from '../Actuar';
 
 export class Logger {
     // protected static DBG: boolean = false;
     protected _name: string = 'logger';
     protected _muted: boolean = false;
-    public mute():void { this._muted = true }
-    public unmute():void { this._muted = false }
+    public mute():Logger { this._muted = true; return this; }
+    public unmute():Logger { this._muted = false; return this; }
     protected _write: boolean = true;
-    public writable(): void { this._write = true }
-    public unwritable(): void { this._write = false }
+    public writable(): Logger { this._write = true; return this; }
+    public unwritable(): Logger { this._write = false; return this; }
+    protected _remote: boolean = false;
+    public remote(): Logger { this._remote = true; return this; }
+    public unremote(): Logger { this._remote = false; return this; }
 
     constructor(name: string) {
         this._name = name;
@@ -19,7 +23,7 @@ export class Logger {
     private static extension: string = ".aLog";
     public static writeOut(log: ActuarLog) {
         let FILE = join(ENV.DIR as string, new Date().toLocaleDateString()) + Logger.extension;
-        appendFile(FILE, log.toJsonString(),()=>{});
+        appendFile(FILE, log.toJsonString() + ",\r\n",()=>{});
     }
 
     public get name(): string {
@@ -38,9 +42,10 @@ export class Logger {
             instance: this.$name,
             timestamp: new Date(),
             message: message,
-            type: LogType.Error
+            type: LogType.Log
         }
         const aLog = new ActuarLog(log);
+        if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
     }
@@ -55,9 +60,10 @@ export class Logger {
             line: line,
             file: file,
             message: message,
-            type: LogType.Error
+            type: LogType.Warning
         }
         const aLog = new ActuarLog(log);
+        if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
     }
@@ -89,9 +95,10 @@ export class Logger {
             line: line,
             file: file,
             message: message,
-            type: LogType.Error
+            type: LogType.Debug
         }
         const aLog = new ActuarLog(log);
+        if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
     }

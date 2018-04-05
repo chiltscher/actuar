@@ -3,6 +3,7 @@ import { PathLike } from "fs";
 import { IActuarLog, LogType } from "../Actuar";
 
 class ActuarLog {
+    private readonly kindOf: string = "aLog";
     private instance: string;
     private type: LogType;
     private message: string;
@@ -41,6 +42,7 @@ class ActuarLog {
     }
     public toJson() : IActuarLog {
         return {
+            kindOf: this.kindOf,
             instance: this.instance,
             type: this.type,
             message: this.message,
@@ -61,6 +63,10 @@ class ActuarLog {
     }
     public toJsonString() : string {
         return JSON.stringify(this.toJson());
+    }
+    public static fromBuffer(buffer: Buffer) : ActuarLog{
+        let data : IActuarLog = JSON.parse(buffer.toString());
+        return new ActuarLog(data);
     }
 }
 

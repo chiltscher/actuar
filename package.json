@@ -4,6 +4,7 @@
   "description": "A logger that provides many options to log data and informations",
   "main": "./dist/Actuar.js",
   "scripts": {
+    "pub": "tsc -p ./tsconfig.publish.json && npm run test",
     "build": "tsc -p ./tsconfig.json",
     "test": "npm run build_test && mocha ./test/build/**/*.test.js --reporter spec",
     "build_test": "tsc -p ./tsconfig.test.json",

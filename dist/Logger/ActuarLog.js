@@ -4,6 +4,7 @@ const chalk_1 = require("chalk");
 const Actuar_1 = require("../Actuar");
 class ActuarLog {
     constructor(log) {
+        this.kindOf = "aLog";
         this.instance = log.instance;
         this.type = log.type;
         this.message = log.message;
@@ -31,6 +32,7 @@ class ActuarLog {
     }
     toJson() {
         return {
+            kindOf: this.kindOf,
             instance: this.instance,
             type: this.type,
             message: this.message,
@@ -47,9 +49,11 @@ class ActuarLog {
             error = `(${this.file}:${this.line})`;
         }
         return this.colorize(`[${this.timestamp.toLocaleTimeString()}] - ${this.instance} ${this.type.toUpperCase()} : ${this.message} ${error}`);
+        // [ 08:20:23 ] - APP : Unexpected Data (/path/to/your/application.js:52)
     }
     toJsonString() {
         return JSON.stringify(this.toJson());
     }
 }
 exports.ActuarLog = ActuarLog;
+//# sourceMappingURL=ActuarLog.js.map

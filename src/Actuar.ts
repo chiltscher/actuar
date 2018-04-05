@@ -1,8 +1,9 @@
 import { PathLike, mkdir, existsSync } from "fs";
 import { resolve } from "path";
 import { Logger } from "./Actuar";
-export { ActuarLog } from "./Logger/ActuarLog";
 
+export { Transceiver } from "./ActuarTransceiver/Transceiver";
+export { ActuarLog } from "./Logger/ActuarLog";
 export { Logger } from "./Logger/Logger";
 
 export enum LogLevel {
@@ -10,7 +11,7 @@ export enum LogLevel {
     WARN,
     ERROR,
     DEBUG,
-    ALL
+    ACTUAR // Show all logs, inclusive actuar logs
 }
 export enum LogType {
     Error = "Error",
@@ -27,15 +28,30 @@ export interface IActuarLog {
     file?: PathLike;
     write?: boolean;
     muted?: boolean;
+    kindOf?: string;
 }
 
 export namespace ENV {
     export let REMOTE_IP: string = "";
     export let REMOTE_PORT: number = 8989;
-    export let LOGLVL: LogLevel = LogLevel.ALL;
+    export let LOCAL_PORT: number = 9090;
+    export let LOGLVL: LogLevel = LogLevel.ACTUAR;
     export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
     export let DIR : PathLike = __dirname;
 }
+
+export function setLocalPort(port: number) : void {
+    ENV.LOCAL_PORT = port;
+}
+
+export function setRemotePort(port: number) : void {
+    ENV.REMOTE_PORT = port;
+}
+
+export function setRemoteIp(ip: string) : void {
+    ENV.REMOTE_IP = ip;
+}
+
 export function enableDebug(): void { ENV.DEBUG = true; };
 
 export function getLogfilesDir(): PathLike {
@@ -47,7 +63,7 @@ export function setLogfilesDir(dir: PathLike): Promise<void> {
         if(!existsSync(dir)){
             mkdir(dir, err => {
                 if (err) {
-                    new Logger("actuar").error(`Can not create directory ${dir}`);
+                    new Logger("actuar").unwritable().error(`Can not create directory ${dir}`);
                     reject();
                 }
                 else { ENV.DIR = dir; resolve()};
