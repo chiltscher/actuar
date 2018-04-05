@@ -21,6 +21,7 @@ class Transceiver {
             let jLog = aLog.toJson();
             if (jLog.write) Logger.writeOut(aLog);
             if (!jLog.muted) console.log(aLog.toString());
+            this.fireLogReceivedCallbacks(aLog);
         });
 
         this.server.on('listening', () => {
@@ -30,6 +31,17 @@ class Transceiver {
 
         this.server.bind(ENV.LOCAL_PORT);
     }
+    private static fireLogReceivedCallbacks(aLog: ActuarLog) : void {
+        this._onLogReceivedCallbacks.forEach(callback => {
+            callback(aLog);
+        });
+    }
+    private static _onLogReceivedCallbacks: onLogReceivedCallback[] = []; 
+    public static onLogReceived(callback: onLogReceivedCallback) {
+        this._onLogReceivedCallbacks.push(callback);
+    }
 }
+
+type onLogReceivedCallback = (log : ActuarLog) => void;
 
 export { Transceiver }
