@@ -5,6 +5,8 @@ const path_1 = require("path");
 const Actuar_1 = require("./Actuar");
 var Transceiver_1 = require("./ActuarTransceiver/Transceiver");
 exports.Transceiver = Transceiver_1.Transceiver;
+var Server_1 = require("./LogServer/Server");
+exports.Server = Server_1.Server;
 var ActuarLog_1 = require("./Logger/ActuarLog");
 exports.ActuarLog = ActuarLog_1.ActuarLog;
 var Logger_1 = require("./Logger/Logger");
@@ -15,7 +17,7 @@ var LogLevel;
     LogLevel[LogLevel["WARN"] = 1] = "WARN";
     LogLevel[LogLevel["ERROR"] = 2] = "ERROR";
     LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
-    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR";
+    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR"; // Show all logs, inclusive actuar logs
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 var LogType;
 (function (LogType) {
@@ -76,3 +78,4 @@ function setLogfilesDir(dir) {
     });
 }
 exports.setLogfilesDir = setLogfilesDir;
+//# sourceMappingURL=Actuar.js.map

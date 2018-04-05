@@ -3,6 +3,7 @@ import { resolve } from "path";
 import { Logger } from "./Actuar";
 
 export { Transceiver } from "./ActuarTransceiver/Transceiver";
+export { Server } from "./LogServer/Server";
 export { ActuarLog } from "./Logger/ActuarLog";
 export { Logger } from "./Logger/Logger";
 

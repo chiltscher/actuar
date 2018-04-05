@@ -30,3 +30,4 @@ class Transceiver {
 Transceiver.socket = dgram.createSocket('udp4');
 Transceiver.server = dgram.createSocket('udp4');
 exports.Transceiver = Transceiver;
+//# sourceMappingURL=Transceiver.js.map

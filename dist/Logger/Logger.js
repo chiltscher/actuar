@@ -7,6 +7,7 @@ const path_1 = require("path");
 const Actuar_2 = require("../Actuar");
 class Logger {
     constructor(name) {
+        // protected static DBG: boolean = false;
         this._name = 'logger';
         this._muted = false;
         this._write = true;
@@ -112,3 +113,4 @@ class Logger {
 }
 Logger.extension = ".aLog";
 exports.Logger = Logger;
+//# sourceMappingURL=Logger.js.map
