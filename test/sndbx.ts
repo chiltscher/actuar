@@ -3,6 +3,7 @@ import * as Actuar from "../src/Actuar";
 Actuar.setLogfilesDir("./test/logfiles");
 Actuar.setRemotePort(9090);
 Actuar.setRemoteIp('localhost');
+Actuar.Server.listen();
 
 const remoteLogger = new Actuar.Logger("Remote").remote();
 const localLogger = new Actuar.Logger("local");

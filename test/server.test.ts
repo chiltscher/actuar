@@ -20,7 +20,7 @@ describe("Actuar server test", () => {
     });
     
     it("Should get a list with at least one file", (done) => {
-        Actuar.Server.fileList().then((fileList) => {
+        Actuar.Server.getFiles().then((fileList) => {
             expect(fileList.length).not.to.equal(0);
             done();
         });

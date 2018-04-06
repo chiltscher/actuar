@@ -36,6 +36,7 @@ export namespace ENV {
     export let REMOTE_IP: string = "localhost";
     export let REMOTE_PORT: number = 8989;
     export let LOCAL_PORT: number = 9090;
+    export let HTTP_PORT: number = 9191;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;
     export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
     export let DIR : PathLike = __dirname;

@@ -46,7 +46,7 @@ class ActuarLog {
             instance: this.instance,
             type: this.type,
             message: this.message,
-            timestamp: this.timestamp,
+            timestamp: this.timestamp.toLocaleTimeString(),
             line: this.line,
             file: this.file,
             muted: this.muted,

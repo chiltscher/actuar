@@ -1,21 +1,26 @@
 import { readdir, PathLike, readFile } from "fs";
 import { ENV, Logger, IActuarLog, ActuarLog } from "../Actuar";
 import { resolve, extname, join } from "path";
+import * as express from "express";
+import { request } from "https";
+
+type fileList = { [key : string] : string };
 
 class Server {
-    public static fileList() : Promise<string[]> {
-        return new Promise <string[]>((res, rej) => {
+    private static app : express.Application = express();
+    public static getFiles() : Promise<fileList> {
+        return new Promise <fileList>((res, rej) => {
             readdir(ENV.DIR, (err, files) => {
                 if(err) {
                     new Logger("actuar").unwritable().error("Can not read logfiles directory");
                     rej();
                 }
                 else {
-                    let result: string[] = [];
+                    let result: fileList = {};
                     files.forEach(file => {
                         if(extname(file) === Logger.extension) {
                             let path : string = resolve(join(ENV.DIR as string, file));
-                            result.push(path);
+                            result[file] = path;
                 }
                     });
                     res(result);
@@ -24,8 +29,8 @@ class Server {
         });
     }
 
-    public static getLogsFromFile(path: PathLike) : Promise<ActuarLog[]>{
-        return new Promise<ActuarLog[]>((res, rej) => {
+    public static getLogsFromFile(path: string) : Promise<IActuarLog[]>{
+        return new Promise<IActuarLog[]>((res, rej) => {
             readFile(path, (err, content) => {
                 if (err) {
                     new Logger("actuar").unwritable().error(`Can not read logfile ${path}`);
@@ -35,14 +40,42 @@ class Server {
                     let contentString = content.toString();
                     contentString = `[${contentString.substring(0, contentString.length - 3)}]`;
                     let data : IActuarLog[] = JSON.parse(contentString);
-                    let result: ActuarLog[] = [];
+                    let result: IActuarLog[] = [];
                     data.forEach(date => {
-                        result.push(new ActuarLog(date));
+                        result.push(new ActuarLog(date).toJson());
                     });
                     res(result);
                 }
             });
         });
+    }
+
+    public static listen() {
+        this.startUpServer();
+    };
+
+    private static startUpServer() {
+        var that = this;
+        const app = this.app;
+        app.set('view engine', 'pug');
+
+        app.get('/favicon.ico', (req, res, next) => {
+            res.end();
+        });
+        app.get('/', (req, res, next) => {
+             let today = new Date().toLocaleDateString();
+             res.redirect(`/${today}`);
+        });
+        app.get('/:date', (req, res, next) => {
+            let date = req.params.date;
+            that.getFiles().then((files) => {
+                const concreteFile = files[`${date}.aLog`];
+                that.getLogsFromFile(concreteFile).then((logs) => {
+                    res.render('index', {logs: logs});
+                });
+            });
+        });
+        app.listen(ENV.HTTP_PORT);
     }
 }
 
