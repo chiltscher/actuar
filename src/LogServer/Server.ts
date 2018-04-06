@@ -69,9 +69,11 @@ class Server {
         app.get('/:date', (req, res, next) => {
             let date = req.params.date;
             that.getFiles().then((files) => {
-                const concreteFile = files[`${date}.aLog`];
-                that.getLogsFromFile(concreteFile).then((logs) => {
-                    res.render('index', {logs: logs});
+                const file = `${date}.aLog`;
+                const path = files[file];
+                if (path === undefined) res.render('index', { noFile: true, file: file });
+                that.getLogsFromFile(path).then((logs) => {
+                    res.render('index', {logs: logs, file: file, fileList: files, noFile: false});
                 });
             });
         });

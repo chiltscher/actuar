@@ -18,7 +18,7 @@ export enum LogType {
     Error = "Error",
     Warning = "Warning",
     Debug = "Debug",
-    Log = "",
+    Log = "Info",
 }
 export interface IActuarLog {
     instance: string;

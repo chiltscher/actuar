@@ -4,10 +4,41 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        title Actuar
+        style(type="text/css").
+            body,html {
+                padding-top: 10px;
+                font-family: arial, sans-serif;
+                }
+            table {
+                border-collapse: collapse;
+                width: 75%;
+                margin: 0 auto;
+            }
+            td,th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+        title Actuar-Logs
     body
-        h1 Logs
-        
-        ul
-            each log in logs 
-                li= log.timestamp + ': [' + log.instance + '] -' + log.message
+        h1= file
+        hr
+        case noFile
+            when true
+                h2 There is no file #{file}
+            default
+                table()
+                    tr
+                        th Time
+                        th Instance
+                        th Type
+                        th Message
+                    each log in logs
+                        tr
+                            td= log.timestamp.toLocaleTimeString()
+                            td= log.instance
+                            td= log.type
+                            td= log.message
