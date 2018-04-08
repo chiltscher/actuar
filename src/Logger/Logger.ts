@@ -22,7 +22,7 @@ export class Logger {
     }
     public static extension: string = ".aLog";
     public static writeOut(log: ActuarLog) {
-        let FILE = join(ENV.DIR as string, new Date().toLocaleDateString()) + Logger.extension;
+        let FILE = join(ENV.LOGDIR as string, new Date().toLocaleDateString()) + Logger.extension;
         appendFile(FILE, log.toJsonString() + ",\r\n",()=>{});
     }
 

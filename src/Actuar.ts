@@ -19,7 +19,11 @@ export enum LogType {
     Warning = "Warning",
     Debug = "Debug",
     Log = "Info",
-}
+};
+
+export enum DataTypes {
+    Table
+};
 export interface IActuarLog {
     instance: string;
     type: LogType;
@@ -39,7 +43,8 @@ export namespace ENV {
     export let HTTP_PORT: number = 9191;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;
     export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    export let DIR : PathLike = __dirname;
+    export let LOGDIR : PathLike = __dirname;
+    export let DATADIR : PathLike = __dirname;
 }
 
 export function setLocalPort(port: number) : void {
@@ -57,19 +62,33 @@ export function setRemoteIp(ip: string) : void {
 export function enableDebug(): void { ENV.DEBUG = true; };
 
 export function getLogfilesDir(): PathLike {
-    return ENV.DIR;
+    return ENV.LOGDIR;
 }
 export function setLogfilesDir(dir: PathLike): Promise<void> {
-    dir = resolve(dir as string);
-    return new Promise<void>((resolve, reject) => {
-        if(!existsSync(dir)){
+    return new Promise<void>((res, rej) => {
+        dirCreation(resolve(dir as string)).then(
+            path => { ENV.LOGDIR = path; res(); }
+        );
+});
+}
+
+export function setDatafilesDir(dir: PathLike) : Promise<void> {
+    return new Promise<void>((res, rej) => {
+        dirCreation(resolve(dir as string)).then(
+            path => { ENV.LOGDIR = path; res(); }
+    )});
+}
+
+function dirCreation(dir: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        if (!existsSync(dir)) {
             mkdir(dir, err => {
                 if (err) {
                     new Logger("actuar").unwritable().error(`Can not create directory ${dir}`);
                     reject();
                 }
-                else { ENV.DIR = dir; resolve()};
+                else { resolve(dir as string)  };
             });
-        } else { ENV.DIR = dir; resolve() };
+        } else { resolve(dir as string) };
     });
 }

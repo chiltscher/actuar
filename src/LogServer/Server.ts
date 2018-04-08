@@ -10,7 +10,7 @@ class Server {
     private static app : express.Application = express();
     public static getFiles() : Promise<fileList> {
         return new Promise <fileList>((res, rej) => {
-            readdir(ENV.DIR, (err, files) => {
+            readdir(ENV.LOGDIR, (err, files) => {
                 if(err) {
                     new Logger("actuar").unwritable().error("Can not read logfiles directory");
                     rej();
@@ -19,7 +19,7 @@ class Server {
                     let result: fileList = {};
                     files.forEach(file => {
                         if(extname(file) === Logger.extension) {
-                            let path : string = resolve(join(ENV.DIR as string, file));
+                            let path : string = resolve(join(ENV.LOGDIR as string, file));
                             result[file] = path;
                 }
                     });
