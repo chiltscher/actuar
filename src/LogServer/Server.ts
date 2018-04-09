@@ -1,8 +1,7 @@
-import { readdir, PathLike, readFile } from "fs";
+import { readdir, readFile } from "fs";
 import { ENV, Logger, IActuarLog, ActuarLog } from "../Actuar";
 import { resolve, extname, join } from "path";
 import * as express from "express";
-import { request } from "https";
 
 type fileList = { [key : string] : string };
 

@@ -6,6 +6,7 @@ export { Transceiver } from "./ActuarTransceiver/Transceiver";
 export { Server } from "./LogServer/Server";
 export { ActuarLog } from "./Logger/ActuarLog";
 export { Logger } from "./Logger/Logger";
+export { Stats } from "./Statistics/Stats";
 
 export enum LogLevel {
     INFO,
@@ -24,6 +25,11 @@ export enum LogType {
 export enum DataTypes {
     Table
 };
+
+
+export enum StatInterval {
+    Hour, Day, Week
+}
 export interface IActuarLog {
     instance: string;
     type: LogType;

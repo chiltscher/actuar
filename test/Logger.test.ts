@@ -4,11 +4,19 @@ import { join, resolve } from "path";
 describe("Actuar Logger Test", () => {
     let Logger: Actuar.Logger;
     const dirPath = resolve(join(__dirname, "..", "..", "logfiles"));
+    before("Reset the Actuar Statistics", (done) => {
+        Actuar.Stats.reset();
+        done();
+    });
+    it("Actuar stats should be 0", (done) => {
+        expect(Actuar.Stats.Outs).to.equal(0);
+        done();
+    });
 
     it("Should create an logfiles directory", (done) => {
         Actuar.setLogfilesDir(dirPath).then(
             () => {
-                expect(Actuar.getLogfilesDir()).to.equal(dirPath);
+                expect(Actuar.ENV.DIR).to.equal(dirPath);
                 done();
             });
     });
@@ -29,12 +37,14 @@ describe("Actuar Logger Test", () => {
         done()
     });
     
+
     it("Should throw no error when logging (there should be no visible output because its muted)", () => {
         Logger.mute();
         Logger.log("This is just a test");
         Logger.warn("This is just a test", 12, __filename);
         Logger.error("This is just a test", 13, __filename);
         Logger.debug("This is just a test", 14, __filename);
+        expect(Actuar.Stats.Outs).to.equal(3);
     });
     it("Should output the example for GitHub", () => {
         let Logger = new Actuar.Logger('Server');

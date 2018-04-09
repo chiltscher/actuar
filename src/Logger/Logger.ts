@@ -1,4 +1,4 @@
-import { ENV, IActuarLog, LogType, LogLevel } from '../Actuar';
+import { ENV, IActuarLog, LogType, LogLevel, Stats } from '../Actuar';
 import { ActuarLog } from './ActuarLog';
 import { appendFile } from 'fs';
 import { join } from 'path';
@@ -48,6 +48,7 @@ export class Logger {
         if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
+        Stats.Logs.inc();
     }
 
     public warn(message: string, line?: number, file?: string): void {
@@ -66,6 +67,7 @@ export class Logger {
         if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
         if (!this._muted) console.log(aLog.toString());
+        Stats.Warnings.inc();
     }
 
     public error(message: string, line?: number, file?: string): void {
@@ -83,6 +85,7 @@ export class Logger {
         const aLog = new ActuarLog(log);
         if(this._write) Logger.writeOut(aLog);
         if(!this._muted) console.log(aLog.toString());
+        Stats.Errors.inc();
     }
 
     public debug(message: string, line?: number, file?: string): void {
