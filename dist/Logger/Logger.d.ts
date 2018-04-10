@@ -11,7 +11,8 @@ export declare class Logger {
     remote(): Logger;
     unremote(): Logger;
     constructor(name: string);
-    private static extension;
+    static readonly DIR: string;
+    static readonly EXT: string;
     static writeOut(log: ActuarLog): void;
     readonly name: string;
     private readonly $name;

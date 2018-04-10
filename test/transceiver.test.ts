@@ -2,7 +2,7 @@ import * as Actuar from '../src/Actuar';
 import { expect } from 'chai';
 
 describe("Actuar transceiver test", () => {
-    Actuar.setLogfilesDir("./test/logfiles");
+    Actuar.setGlobalDir("./test/logfiles");
     Actuar.setRemotePort(9090);
     Actuar.setRemoteIp('localhost');
 

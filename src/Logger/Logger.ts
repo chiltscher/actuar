@@ -20,9 +20,10 @@ export class Logger {
     constructor(name: string) {
         this._name = name;
     }
-    public static extension: string = ".aLog";
+    public static readonly DIR: string = join(ENV.ROOT as string, "logfiles");
+    public static readonly EXT: string = ".aLog";
     public static writeOut(log: ActuarLog) {
-        let FILE = join(ENV.LOGDIR as string, new Date().toLocaleDateString()) + Logger.extension;
+        let FILE = join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
         appendFile(FILE, log.toJsonString() + ",\r\n",()=>{});
     }
 

@@ -1,6 +1,6 @@
 import * as Actuar from "../src/Actuar";
 
-Actuar.setLogfilesDir("./test/logfiles");
+Actuar.setGlobalDir("./test/logfiles");
 Actuar.setRemotePort(9090);
 Actuar.setRemoteIp('localhost');
 Actuar.Server.listen();

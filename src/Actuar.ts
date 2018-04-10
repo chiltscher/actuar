@@ -1,13 +1,4 @@
-import { PathLike, mkdir, existsSync } from "fs";
-import { resolve } from "path";
-import { Logger } from "./Actuar";
-
-export { Transceiver } from "./ActuarTransceiver/Transceiver";
-export { Server } from "./LogServer/Server";
-export { ActuarLog } from "./Logger/ActuarLog";
-export { Logger } from "./Logger/Logger";
-export { Stats } from "./Statistics/Stats";
-
+//#region types, enums and interfaces
 export enum LogLevel {
     INFO,
     WARN,
@@ -21,12 +12,9 @@ export enum LogType {
     Debug = "Debug",
     Log = "Info",
 };
-
 export enum DataTypes {
     Table
 };
-
-
 export enum StatInterval {
     Hour, Day, Week
 }
@@ -41,6 +29,7 @@ export interface IActuarLog {
     muted?: boolean;
     kindOf?: string;
 }
+//#endregion
 
 export namespace ENV {
     export let REMOTE_IP: string = "localhost";
@@ -49,10 +38,17 @@ export namespace ENV {
     export let HTTP_PORT: number = 9191;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;
     export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    export let LOGDIR : PathLike = __dirname;
-    export let DATADIR : PathLike = __dirname;
+    export let ROOT: PathLike = __dirname;
+    export let DATADIR: PathLike = __dirname;
 }
 
+//#region importing dependencies
+import { PathLike, mkdir, existsSync } from "fs";
+import { resolve } from "path";
+import { Logger } from "./Actuar";
+//#endregion
+
+//#region general setup and configuration functions
 export function setLocalPort(port: number) : void {
     ENV.LOCAL_PORT = port;
 }
@@ -67,22 +63,15 @@ export function setRemoteIp(ip: string) : void {
 
 export function enableDebug(): void { ENV.DEBUG = true; };
 
-export function getLogfilesDir(): PathLike {
-    return ENV.LOGDIR;
+export function getGlobalDir(): PathLike {
+    return ENV.ROOT;
 }
-export function setLogfilesDir(dir: PathLike): Promise<void> {
+export function setGlobalDir(dir: PathLike): Promise<void> {
     return new Promise<void>((res, rej) => {
         dirCreation(resolve(dir as string)).then(
-            path => { ENV.LOGDIR = path; res(); }
+            path => { ENV.ROOT = path; res(); }
         );
 });
-}
-
-export function setDatafilesDir(dir: PathLike) : Promise<void> {
-    return new Promise<void>((res, rej) => {
-        dirCreation(resolve(dir as string)).then(
-            path => { ENV.LOGDIR = path; res(); }
-    )});
 }
 
 function dirCreation(dir: string): Promise<string> {
@@ -98,3 +87,12 @@ function dirCreation(dir: string): Promise<string> {
         } else { resolve(dir as string) };
     });
 }
+//#endregion
+
+//#region re-exporting modules
+export { Transceiver } from "./ActuarTransceiver/Transceiver";
+export { Server } from "./LogServer/Server";
+export { ActuarLog } from "./Logger/ActuarLog";
+export { Logger } from "./Logger/Logger";
+export { Stats } from "./Statistics/Stats";
+//#endregion

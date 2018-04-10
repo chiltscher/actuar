@@ -14,9 +14,9 @@ describe("Actuar Logger Test", () => {
     });
 
     it("Should create an logfiles directory", (done) => {
-        Actuar.setLogfilesDir(dirPath).then(
+        Actuar.setGlobalDir(dirPath).then(
             () => {
-                expect(Actuar.ENV.DIR).to.equal(dirPath);
+                expect(Actuar.ENV.ROOT).to.equal(dirPath);
                 done();
             });
     });

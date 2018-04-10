@@ -6,7 +6,7 @@
   "scripts": {
     "pub": "tsc -p ./tsconfig.publish.json && npm run test",
     "build": "tsc -p ./tsconfig.json",
-    "test": "npm run build_test && mocha ./test/build/**/*.test.js --reporter spec",
+    "test": "npm run build_test && mocha ./test/build/**/*.test.js --reporter spec --exit",
     "watch": "tsc -p ./tsconfig.json --watch",
     "build_test": "tsc -p ./tsconfig.test.json",
     "watch_test": "tsc -p ./tsconfig.test.json --watch"

@@ -19,6 +19,7 @@ class Transceiver {
                 Actuar_1.Logger.writeOut(aLog);
             if (!jLog.muted)
                 console.log(aLog.toString());
+            this.fireLogReceivedCallbacks(aLog);
         });
         this.server.on('listening', () => {
             const address = this.server.address();
@@ -26,8 +27,16 @@ class Transceiver {
         });
         this.server.bind(Actuar_1.ENV.LOCAL_PORT);
     }
+    static fireLogReceivedCallbacks(aLog) {
+        this._onLogReceivedCallbacks.forEach(callback => {
+            callback(aLog);
+        });
+    }
+    static onLogReceived(callback) {
+        this._onLogReceivedCallbacks.push(callback);
+    }
 }
 Transceiver.socket = dgram.createSocket('udp4');
 Transceiver.server = dgram.createSocket('udp4');
+Transceiver._onLogReceivedCallbacks = [];
 exports.Transceiver = Transceiver;
-//# sourceMappingURL=Transceiver.js.map

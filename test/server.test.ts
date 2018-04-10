@@ -6,9 +6,9 @@ describe("Actuar server test", () => {
     const dirPath = resolve(join(__dirname, "..", "..", "logfiles"));
 
     it("Should create an logfiles directory", (done) => {
-        Actuar.setLogfilesDir(dirPath).then(
+        Actuar.setGlobalDir(dirPath).then(
             () => {
-                expect(Actuar.getLogfilesDir()).to.equal(dirPath);
+                expect(Actuar.getGlobalDir()).to.equal(dirPath);
                 done();
             });
     });

@@ -7,7 +7,6 @@ const path_1 = require("path");
 const Actuar_2 = require("../Actuar");
 class Logger {
     constructor(name) {
-        // protected static DBG: boolean = false;
         this._name = 'logger';
         this._muted = false;
         this._write = true;
@@ -21,7 +20,7 @@ class Logger {
     remote() { this._remote = true; return this; }
     unremote() { this._remote = false; return this; }
     static writeOut(log) {
-        let FILE = path_1.join(Actuar_1.ENV.DIR, new Date().toLocaleDateString()) + Logger.extension;
+        let FILE = path_1.join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
         fs_1.appendFile(FILE, log.toJsonString() + ",\r\n", () => { });
     }
     get name() {
@@ -48,6 +47,7 @@ class Logger {
             Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
+        Actuar_1.Stats.Logs.inc();
     }
     warn(message, line, file) {
         if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.WARN)
@@ -69,6 +69,7 @@ class Logger {
             Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
+        Actuar_1.Stats.Warnings.inc();
     }
     error(message, line, file) {
         if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.ERROR)
@@ -88,6 +89,7 @@ class Logger {
             Logger.writeOut(aLog);
         if (!this._muted)
             console.log(aLog.toString());
+        Actuar_1.Stats.Errors.inc();
     }
     debug(message, line, file) {
         if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.DEBUG || !Actuar_1.ENV.DEBUG)
@@ -111,6 +113,6 @@ class Logger {
             console.log(aLog.toString());
     }
 }
-Logger.extension = ".aLog";
+Logger.DIR = path_1.join(Actuar_1.ENV.ROOT, "logfiles");
+Logger.EXT = ".aLog";
 exports.Logger = Logger;
-//# sourceMappingURL=Logger.js.map
