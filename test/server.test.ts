@@ -3,12 +3,11 @@ import { join, resolve } from "path";
 import { expect } from "chai";
 describe("Actuar server test", () => {
     let Logger: Actuar.Logger;
-    const dirPath = resolve(join(__dirname, "..", "..", "logfiles"));
-
+    const dirPath = resolve(join(__dirname, "..", ".."));
     it("Should create an logfiles directory", (done) => {
-        Actuar.setGlobalDir(dirPath).then(
+        Actuar.setRootDir(dirPath).then(
             () => {
-                expect(Actuar.getGlobalDir()).to.equal(dirPath);
+                expect(Actuar.getRootDir()).to.equal(join(dirPath, Actuar.moduleName));
                 done();
             });
     });
@@ -20,7 +19,7 @@ describe("Actuar server test", () => {
     });
     
     it("Should get a list with at least one file", (done) => {
-        Actuar.Server.getFiles().then((fileList) => {
+        Actuar.Server.getLogFiles().then((fileList) => {
             expect(fileList.length).not.to.equal(0);
             done();
         });

@@ -1,6 +1,6 @@
-import { ENV, IActuarLog, LogType, LogLevel, Stats } from '../Actuar';
+import { ENV, IActuarLog, LogType, LogLevel, Stats, createDirectory } from '../Actuar';
 import { ActuarLog } from './ActuarLog';
-import { appendFile } from 'fs';
+import { appendFile, existsSync } from 'fs';
 import { join } from 'path';
 import { Transceiver } from '../Actuar';
 
@@ -20,11 +20,17 @@ export class Logger {
     constructor(name: string) {
         this._name = name;
     }
-    public static readonly DIR: string = join(ENV.ROOT as string, "logfiles");
+    public static get DIR(): string { 
+        return join(ENV.ROOT as string, "logfiles") 
+    };
     public static readonly EXT: string = ".aLog";
     public static writeOut(log: ActuarLog) {
-        let FILE = join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
-        appendFile(FILE, log.toJsonString() + ",\r\n",()=>{});
+        if(!existsSync(Logger.DIR)){
+            createDirectory(Logger.DIR).then(() => Logger.writeOut(log));
+        } else {
+            let FILE = join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
+            appendFile(FILE, log.toJsonString() + ",\r\n",()=>{});
+        }
     }
 
     public get name(): string {

@@ -19,9 +19,18 @@ class Logger {
     unwritable() { this._write = false; return this; }
     remote() { this._remote = true; return this; }
     unremote() { this._remote = false; return this; }
+    static get DIR() {
+        return path_1.join(Actuar_1.ENV.ROOT, "logfiles");
+    }
+    ;
     static writeOut(log) {
-        let FILE = path_1.join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
-        fs_1.appendFile(FILE, log.toJsonString() + ",\r\n", () => { });
+        if (!fs_1.existsSync(Logger.DIR)) {
+            Actuar_1.createDirectory(Logger.DIR).then(() => Logger.writeOut(log));
+        }
+        else {
+            let FILE = path_1.join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
+            fs_1.appendFile(FILE, log.toJsonString() + ",\r\n", () => { });
+        }
     }
     get name() {
         return this._name;
@@ -113,6 +122,5 @@ class Logger {
             console.log(aLog.toString());
     }
 }
-Logger.DIR = path_1.join(Actuar_1.ENV.ROOT, "logfiles");
 Logger.EXT = ".aLog";
 exports.Logger = Logger;

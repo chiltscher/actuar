@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = require("fs");
+const path_1 = require("path");
+exports.moduleName = "actuar";
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["INFO"] = 0] = "INFO";
@@ -35,11 +38,9 @@ var ENV;
     ENV.HTTP_PORT = 9191;
     ENV.LOGLVL = LogLevel.ACTUAR;
     ENV.DEBUG = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    ENV.ROOT = __dirname;
-    ENV.DATADIR = __dirname;
+    ENV.ROOT = path_1.resolve(path_1.join(__dirname, exports.moduleName));
 })(ENV = exports.ENV || (exports.ENV = {}));
-const fs_1 = require("fs");
-const path_1 = require("path");
+fs_1.existsSync(ENV.ROOT) ? null : fs_1.mkdirSync(ENV.ROOT);
 const Actuar_1 = require("./Actuar");
 function setLocalPort(port) {
     ENV.LOCAL_PORT = port;
@@ -56,22 +57,28 @@ exports.setRemoteIp = setRemoteIp;
 function enableDebug() { ENV.DEBUG = true; }
 exports.enableDebug = enableDebug;
 ;
-function getGlobalDir() {
+function getRootDir() {
     return ENV.ROOT;
 }
-exports.getGlobalDir = getGlobalDir;
-function setGlobalDir(dir) {
+exports.getRootDir = getRootDir;
+function setRootDir(dir) {
     return new Promise((res, rej) => {
-        dirCreation(path_1.resolve(dir)).then(path => { ENV.ROOT = path; res(); });
+        dir = path_1.resolve(dir);
+        if (path_1.basename(dir) !== exports.moduleName) {
+            dir = path_1.join(dir, exports.moduleName);
+        }
+        createDirectory(dir).then(path => { ENV.ROOT = path; res(); });
     });
 }
-exports.setGlobalDir = setGlobalDir;
-function dirCreation(dir) {
+exports.setRootDir = setRootDir;
+function createDirectory(dir) {
     return new Promise((resolve, reject) => {
         if (!fs_1.existsSync(dir)) {
             fs_1.mkdir(dir, err => {
                 if (err) {
-                    new Actuar_1.Logger("actuar").unwritable().error(`Can not create directory ${dir}`);
+                    if (ENV.LOGLVL === LogLevel.ACTUAR) {
+                        new Actuar_1.Logger(exports.moduleName).unwritable().error(`Can not create directory ${dir}`);
+                    }
                     reject();
                 }
                 else {
@@ -86,13 +93,14 @@ function dirCreation(dir) {
         ;
     });
 }
+exports.createDirectory = createDirectory;
+var Logger_1 = require("./Logger/Logger");
+exports.Logger = Logger_1.Logger;
 var Transceiver_1 = require("./ActuarTransceiver/Transceiver");
 exports.Transceiver = Transceiver_1.Transceiver;
-var Server_1 = require("./LogServer/Server");
+var Server_1 = require("./Server/Server");
 exports.Server = Server_1.Server;
 var ActuarLog_1 = require("./Logger/ActuarLog");
 exports.ActuarLog = ActuarLog_1.ActuarLog;
-var Logger_1 = require("./Logger/Logger");
-exports.Logger = Logger_1.Logger;
 var Stats_1 = require("./Statistics/Stats");
 exports.Stats = Stats_1.Stats;

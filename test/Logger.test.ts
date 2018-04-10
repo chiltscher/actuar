@@ -3,7 +3,7 @@ import { expect } from "chai"
 import { join, resolve } from "path";
 describe("Actuar Logger Test", () => {
     let Logger: Actuar.Logger;
-    const dirPath = resolve(join(__dirname, "..", "..", "logfiles"));
+    const dirPath = resolve(join(__dirname, "..", ".."));
     before("Reset the Actuar Statistics", (done) => {
         Actuar.Stats.reset();
         done();
@@ -14,9 +14,9 @@ describe("Actuar Logger Test", () => {
     });
 
     it("Should create an logfiles directory", (done) => {
-        Actuar.setGlobalDir(dirPath).then(
+        Actuar.setRootDir(dirPath).then(
             () => {
-                expect(Actuar.ENV.ROOT).to.equal(dirPath);
+                expect(Actuar.ENV.ROOT).to.equal(join(dirPath, Actuar.moduleName));
                 done();
             });
     });

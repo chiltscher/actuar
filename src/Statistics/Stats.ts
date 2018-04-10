@@ -1,5 +1,5 @@
-type counterChangedCallback = (conter: Counter) => void;
-class timeDataset {
+export type counterChangedCallback = (conter: Counter) => void;
+export class timeDataset {
     public timestamp?: Date;
     public value?: number;
     constructor(timestamp?: Date, value?: number){
@@ -8,7 +8,7 @@ class timeDataset {
     }
 };
 
-class Counter {
+export class Counter {
     constructor(){
         var range = Stats.historyRange;
         for(let i = 0; i < range; i++) {
@@ -122,5 +122,5 @@ class Stats {
     }
 }
 export {
-    Stats, Counter
+    Stats
 };

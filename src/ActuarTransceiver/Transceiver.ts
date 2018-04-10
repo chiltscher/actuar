@@ -42,6 +42,6 @@ class Transceiver {
     }
 }
 
-type onLogReceivedCallback = (log : ActuarLog) => void;
+export type onLogReceivedCallback = (log : ActuarLog) => void;
 
 export { Transceiver }

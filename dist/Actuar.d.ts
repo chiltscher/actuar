@@ -1,4 +1,6 @@
 /// <reference types="node" />
+import { PathLike } from "fs";
+export declare const moduleName = "actuar";
 export declare enum LogLevel {
     INFO = 0,
     WARN = 1,
@@ -39,17 +41,16 @@ export declare namespace ENV {
     let LOGLVL: LogLevel;
     let DEBUG: boolean;
     let ROOT: PathLike;
-    let DATADIR: PathLike;
 }
-import { PathLike } from "fs";
 export declare function setLocalPort(port: number): void;
 export declare function setRemotePort(port: number): void;
 export declare function setRemoteIp(ip: string): void;
 export declare function enableDebug(): void;
-export declare function getGlobalDir(): PathLike;
-export declare function setGlobalDir(dir: PathLike): Promise<void>;
-export { Transceiver } from "./ActuarTransceiver/Transceiver";
-export { Server } from "./LogServer/Server";
-export { ActuarLog } from "./Logger/ActuarLog";
+export declare function getRootDir(): PathLike;
+export declare function setRootDir(dir: PathLike): Promise<void>;
+export declare function createDirectory(dir: string): Promise<string>;
 export { Logger } from "./Logger/Logger";
+export { Transceiver } from "./ActuarTransceiver/Transceiver";
+export { Server } from "./Server/Server";
+export { ActuarLog } from "./Logger/ActuarLog";
 export { Stats } from "./Statistics/Stats";

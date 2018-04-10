@@ -5,18 +5,20 @@ const Actuar_1 = require("../Actuar");
 const path_1 = require("path");
 const express = require("express");
 class Server {
-    static getFiles() {
+    static getLogFiles() {
         return new Promise((res, rej) => {
-            fs_1.readdir(Actuar_1.ENV.ROOT, (err, files) => {
+            fs_1.readdir(Actuar_1.Logger.DIR, (err, files) => {
                 if (err) {
-                    new Actuar_1.Logger("actuar").unwritable().error("Can not read logfiles directory");
+                    if (Actuar_1.ENV.LOGLVL === Actuar_1.LogLevel.ACTUAR) {
+                        new Actuar_1.Logger(Actuar_1.moduleName).unwritable().error("Can not read logfiles directory");
+                    }
                     rej();
                 }
                 else {
                     let result = {};
                     files.forEach(file => {
                         if (path_1.extname(file) === Actuar_1.Logger.EXT) {
-                            let path = path_1.resolve(path_1.join(Actuar_1.ENV.ROOT, file));
+                            let path = path_1.resolve(path_1.join(Actuar_1.Logger.DIR, file));
                             result[file] = path;
                         }
                     });
@@ -29,7 +31,9 @@ class Server {
         return new Promise((res, rej) => {
             fs_1.readFile(path, (err, content) => {
                 if (err) {
-                    new Actuar_1.Logger("actuar").unwritable().error(`Can not read logfile ${path}`);
+                    if (Actuar_1.ENV.LOGLVL === Actuar_1.LogLevel.ACTUAR) {
+                        new Actuar_1.Logger(Actuar_1.moduleName).unwritable().error(`Can not read logfile ${path}`);
+                    }
                     rej();
                 }
                 else {
@@ -62,7 +66,7 @@ class Server {
         });
         app.get('/:date', (req, res, next) => {
             let date = req.params.date;
-            that.getFiles().then((files) => {
+            that.getLogFiles().then((files) => {
                 const file = `${date}.aLog`;
                 const path = files[file];
                 if (path === undefined)

@@ -1,24 +1,26 @@
 import { readdir, readFile } from "fs";
-import { ENV, Logger, IActuarLog, ActuarLog } from "../Actuar";
+import { ENV, Logger, IActuarLog, ActuarLog, LogLevel, moduleName } from "../Actuar";
 import { resolve, extname, join } from "path";
 import * as express from "express";
 
-type fileList = { [key : string] : string };
+export type fileList = { [key : string] : string };
 
 class Server {
     private static app : express.Application = express();
-    public static getFiles() : Promise<fileList> {
+    public static getLogFiles() : Promise<fileList> {
         return new Promise <fileList>((res, rej) => {
-            readdir(ENV.ROOT, (err, files) => {
+            readdir(Logger.DIR, (err, files) => {
                 if(err) {
-                    new Logger("actuar").unwritable().error("Can not read logfiles directory");
+                    if (ENV.LOGLVL === LogLevel.ACTUAR) {
+                        new Logger(moduleName).unwritable().error("Can not read logfiles directory");
+                    }
                     rej();
                 }
                 else {
                     let result: fileList = {};
                     files.forEach(file => {
                         if(extname(file) === Logger.EXT) {
-                            let path : string = resolve(join(ENV.ROOT as string, file));
+                            let path : string = resolve(join(Logger.DIR as string, file));
                             result[file] = path;
                 }
                     });
@@ -32,7 +34,9 @@ class Server {
         return new Promise<IActuarLog[]>((res, rej) => {
             readFile(path, (err, content) => {
                 if (err) {
-                    new Logger("actuar").unwritable().error(`Can not read logfile ${path}`);
+                    if (ENV.LOGLVL === LogLevel.ACTUAR) {                                    
+                        new Logger(moduleName).unwritable().error(`Can not read logfile ${path}`);
+                    }
                     rej();
                 }
                 else {
@@ -67,7 +71,7 @@ class Server {
         });
         app.get('/:date', (req, res, next) => {
             let date = req.params.date;
-            that.getFiles().then((files) => {
+            that.getLogFiles().then((files) => {
                 const file = `${date}.aLog`;
                 const path = files[file];
                 if (path === undefined) res.render('index', { noFile: true, file: file });

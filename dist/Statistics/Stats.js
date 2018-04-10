@@ -6,6 +6,7 @@ class timeDataset {
         this.value = value;
     }
 }
+exports.timeDataset = timeDataset;
 ;
 class Counter {
     constructor() {

@@ -1,4 +1,10 @@
+//#region importing dependencies
+import { PathLike, mkdir, existsSync, mkdirSync } from "fs";
+import { resolve, join, basename } from "path";
+//#endregion
+
 //#region types, enums and interfaces
+export const moduleName = "actuar";
 export enum LogLevel {
     INFO,
     WARN,
@@ -38,15 +44,12 @@ export namespace ENV {
     export let HTTP_PORT: number = 9191;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;
     export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    export let ROOT: PathLike = __dirname;
-    export let DATADIR: PathLike = __dirname;
+    export let ROOT: PathLike = resolve(join(__dirname, moduleName));
 }
 
-//#region importing dependencies
-import { PathLike, mkdir, existsSync } from "fs";
-import { resolve } from "path";
+existsSync(ENV.ROOT) ? null : mkdirSync(ENV.ROOT);
+// import Actuar Logger for internal usage
 import { Logger } from "./Actuar";
-//#endregion
 
 //#region general setup and configuration functions
 export function setLocalPort(port: number) : void {
@@ -63,23 +66,29 @@ export function setRemoteIp(ip: string) : void {
 
 export function enableDebug(): void { ENV.DEBUG = true; };
 
-export function getGlobalDir(): PathLike {
+export function getRootDir(): PathLike {
     return ENV.ROOT;
 }
-export function setGlobalDir(dir: PathLike): Promise<void> {
+export function setRootDir(dir: PathLike): Promise<void> {
     return new Promise<void>((res, rej) => {
-        dirCreation(resolve(dir as string)).then(
+        dir = resolve(dir as string);
+        if(basename(dir) !== moduleName) {
+            dir = join(dir, moduleName)
+        }
+        createDirectory(dir).then(
             path => { ENV.ROOT = path; res(); }
         );
 });
 }
 
-function dirCreation(dir: string): Promise<string> {
+export function createDirectory(dir: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         if (!existsSync(dir)) {
             mkdir(dir, err => {
                 if (err) {
-                    new Logger("actuar").unwritable().error(`Can not create directory ${dir}`);
+                    if(ENV.LOGLVL === LogLevel.ACTUAR) {
+                        new Logger(moduleName).unwritable().error(`Can not create directory ${dir}`);
+                    }
                     reject();
                 }
                 else { resolve(dir as string)  };
@@ -90,9 +99,9 @@ function dirCreation(dir: string): Promise<string> {
 //#endregion
 
 //#region re-exporting modules
-export { Transceiver } from "./ActuarTransceiver/Transceiver";
-export { Server } from "./LogServer/Server";
-export { ActuarLog } from "./Logger/ActuarLog";
 export { Logger } from "./Logger/Logger";
+export { Transceiver } from "./ActuarTransceiver/Transceiver";
+export { Server } from "./Server/Server";
+export { ActuarLog } from "./Logger/ActuarLog";
 export { Stats } from "./Statistics/Stats";
 //#endregion
