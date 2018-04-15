@@ -30,4 +30,19 @@ describe("Actuar Test", () => {
         done();
     });
 
+    it("Debug mode should be disabled by default", (done) => {
+        expect(Actuar.ENV.DEBUG).to.be.false;
+        done();
+    });
+
+    it("enableDebug() should turn on the debug-mode", (done) => {
+        Actuar.enableDebug();
+        expect(Actuar.ENV.DEBUG).to.be.true;
+        Actuar.ENV.DEBUG = false;
+        expect(Actuar.ENV.DEBUG).to.be.false;
+        done();
+    });
+
+
+
 })
