@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//#region importing dependencies
+// * importing dependencies
+//#region
 const fs_1 = require("fs");
 const path_1 = require("path");
+const os_1 = require("os");
 //#endregion
-//#region types, enums and interfaces
-exports.moduleName = "actuar";
+// * types, enums and interfaces
+//#region
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["INFO"] = 0] = "INFO";
@@ -34,6 +36,7 @@ var StatInterval;
     StatInterval[StatInterval["Week"] = 2] = "Week";
 })(StatInterval = exports.StatInterval || (exports.StatInterval = {}));
 //#endregion
+exports.moduleName = "actuar";
 var ENV;
 (function (ENV) {
     ENV.REMOTE_IP = "localhost";
@@ -42,7 +45,7 @@ var ENV;
     ENV.HTTP_PORT = 9191;
     ENV.LOGLVL = LogLevel.ACTUAR;
     ENV.DEBUG = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    ENV.ROOT = path_1.resolve(path_1.join(__dirname, exports.moduleName));
+    ENV.ROOT = path_1.resolve(path_1.join(os_1.tmpdir(), exports.moduleName));
 })(ENV = exports.ENV || (exports.ENV = {}));
 fs_1.existsSync(ENV.ROOT) ? null : fs_1.mkdirSync(ENV.ROOT);
 // import Actuar Logger for internal usage
@@ -78,23 +81,23 @@ function setRootDir(dir) {
 }
 exports.setRootDir = setRootDir;
 function createDirectory(dir) {
-    return new Promise((resolve, reject) => {
+    return new Promise((res, rej) => {
         if (!fs_1.existsSync(dir)) {
             fs_1.mkdir(dir, err => {
                 if (err) {
                     if (ENV.LOGLVL === LogLevel.ACTUAR) {
                         new Actuar_1.Logger(exports.moduleName).unwritable().error(`Can not create directory ${dir}`);
                     }
-                    reject();
+                    res(os_1.tmpdir());
                 }
                 else {
-                    resolve(dir);
+                    res(dir);
                 }
                 ;
             });
         }
         else {
-            resolve(dir);
+            res(dir);
         }
         ;
     });

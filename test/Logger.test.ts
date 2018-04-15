@@ -13,14 +13,6 @@ describe("Logger Test", () => {
         done();
     });
 
-    it("Should create an logfiles directory", (done) => {
-        Actuar.setRootDir(dirPath).then(
-            () => {
-                expect(Actuar.ENV.ROOT).to.equal(join(dirPath, Actuar.moduleName));
-                done();
-            });
-    });
-
     it("Should create an instance of a new logger", (done) => {
         Logger = new Actuar.Logger("Test-logger");
         done()

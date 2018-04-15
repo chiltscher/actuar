@@ -2,6 +2,7 @@
 //#region
 import { PathLike, mkdir, existsSync, mkdirSync } from "fs";
 import { resolve, join, basename } from "path";
+import { tmpdir } from 'os';
 //#endregion
 
 // * types, enums and interfaces
@@ -47,10 +48,11 @@ export namespace ENV {
     export let HTTP_PORT: number = 9191;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;
     export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    export let ROOT: PathLike = resolve(join(__dirname, moduleName));
+    export let ROOT: PathLike = resolve(join(tmpdir(), moduleName));
 }
 
 existsSync(ENV.ROOT) ? null : mkdirSync(ENV.ROOT);
+
 // import Actuar Logger for internal usage
 import { Logger } from "./Actuar";
 
@@ -85,18 +87,18 @@ export function setRootDir(dir: PathLike): Promise<void> {
 }
 
 export function createDirectory(dir: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string>((res, rej) => {
         if (!existsSync(dir)) {
             mkdir(dir, err => {
                 if (err) {
                     if(ENV.LOGLVL === LogLevel.ACTUAR) {
                         new Logger(moduleName).unwritable().error(`Can not create directory ${dir}`);
                     }
-                    reject();
+                    res(tmpdir());
                 }
-                else { resolve(dir as string)  };
+                else { res(dir as string)  };
             });
-        } else { resolve(dir as string) };
+        } else { res(dir as string) };
     });
 }
 //#endregion

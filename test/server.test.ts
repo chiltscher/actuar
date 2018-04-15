@@ -3,14 +3,7 @@ import { join, resolve } from "path";
 import { expect } from "chai";
 describe("Actuar server test", () => {
     let Logger: Actuar.Logger;
-    const dirPath = resolve(join(__dirname, "..", ".."));
-    it("Should create an logfiles directory", (done) => {
-        Actuar.setRootDir(dirPath).then(
-            () => {
-                expect(Actuar.getRootDir()).to.equal(join(dirPath, Actuar.moduleName));
-                done();
-            });
-    });
+
     it("Create a test file at first", (done) => {
         Logger = new Actuar.Logger("Test-logger").mute();
         Logger.log(__filename);

@@ -1,5 +1,8 @@
 import * as Actuar from '../src/Actuar';
 import { expect } from 'chai';
+import { existsSync } from 'fs';
+import { join, resolve, basename } from 'path';
+import { tmpdir } from 'os';
 
 describe("Actuar Test", () => {
     it("Should have the const module name 'actuar'", (done) => {
@@ -43,6 +46,26 @@ describe("Actuar Test", () => {
         done();
     });
 
-
-
+    describe("setRootDir function", () => {
+        it("Should create a default dir named 'actuar' on start up in the tmp directory", (done) => {
+            const PATH = resolve(join(tmpdir(), Actuar.moduleName));
+            const exists = existsSync(PATH);
+            expect(exists, `The Path ${PATH} seems not to exist.`).to.be.true;
+            done()
+        });
+        it("Should create a new directory when calling the function", (done) => {
+            const NEW_PATH = resolve(__dirname, '..', '..');
+            const exists = existsSync(join(NEW_PATH, Actuar.moduleName));
+            expect(exists, `The Path ${NEW_PATH} seems to exist already. Have you cleand up before the test?.`).to.be.false;
+            Actuar.setRootDir(NEW_PATH).then(
+                () => {
+                    const dir = Actuar.getRootDir();
+                    console.log(dir);
+                    expect(dir).to.equal(join(NEW_PATH, Actuar.moduleName));
+                    expect(basename(dir as string)).to.equal(Actuar.moduleName);
+                    done()
+                }
+            );
+        });
+    });
 })
