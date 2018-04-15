@@ -1,10 +1,11 @@
-//#region importing dependencies
+// * importing dependencies
+//#region
 import { PathLike, mkdir, existsSync, mkdirSync } from "fs";
 import { resolve, join, basename } from "path";
 //#endregion
 
-//#region types, enums and interfaces
-export const moduleName = "actuar";
+// * types, enums and interfaces
+//#region
 export enum LogLevel {
     INFO,
     WARN,
@@ -36,6 +37,8 @@ export interface IActuarLog {
     kindOf?: string;
 }
 //#endregion
+
+export const moduleName = "actuar";
 
 export namespace ENV {
     export let REMOTE_IP: string = "localhost";
