@@ -1,9 +1,35 @@
 import * as Actuar from '../src/Actuar';
 import { expect } from 'chai';
-import { existsSync } from 'fs';
+import { existsSync, rmdirSync, readdirSync, unlinkSync, statSync } from 'fs';
 import { join, resolve, basename } from 'path';
 import { tmpdir } from 'os';
 
+
+const NEW_PATH = resolve(__dirname, '..', '..');
+
+var deleteFolderRecursive = function (path) {
+    if (existsSync(path)) {
+        readdirSync(path).forEach(function (file, index) {
+            var curPath = path + "/" + file;
+            if (statSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                unlinkSync(curPath);
+            }
+        });
+        rmdirSync(path);
+    }
+};
+
+before("Clean up test enivronment", (done) => {
+    const actuarRoot = join(NEW_PATH, Actuar.moduleName);
+    if(existsSync(join(NEW_PATH, Actuar.moduleName))){
+        deleteFolderRecursive(actuarRoot);
+        done();
+    } else {
+        done();
+    }
+});
 describe("Actuar Test", () => {
     it("Should have the const module name 'actuar'", (done) => {
         expect(Actuar.moduleName).to.equal("actuar");
@@ -38,12 +64,46 @@ describe("Actuar Test", () => {
         done();
     });
 
-    it("enableDebug() should turn on the debug-mode", (done) => {
-        Actuar.enableDebug();
-        expect(Actuar.ENV.DEBUG).to.be.true;
-        Actuar.ENV.DEBUG = false;
-        expect(Actuar.ENV.DEBUG).to.be.false;
-        done();
+    describe("enableDebug function", ()=> {
+        it("Should enable the debug mode", (done) => {
+            Actuar.enableDebug();
+            expect(Actuar.ENV.DEBUG).to.be.true;
+            Actuar.ENV.DEBUG = false;
+            expect(Actuar.ENV.DEBUG).to.be.false;
+            done();
+        });
+    });
+
+    describe("setLocalPort function", () => {
+        it("Should change the local port", (done) => {
+            let oldPort = Actuar.ENV.LOCAL_PORT;
+            Actuar.setLocalPort(9876);
+            expect(Actuar.ENV.LOCAL_PORT).to.equal(9876);
+            Actuar.setLocalPort(oldPort);
+            expect(Actuar.ENV.LOCAL_PORT).to.equal(oldPort);
+            done();
+        });
+    });
+    describe("setRemotePort function", () => {
+        it("Should change the local port", (done) => {
+            let oldPort = Actuar.ENV.REMOTE_PORT;
+            Actuar.setRemotePort(9876);
+            expect(Actuar.ENV.REMOTE_PORT).to.equal(9876);
+            Actuar.setRemotePort(oldPort);
+            expect(Actuar.ENV.REMOTE_PORT).to.equal(oldPort);
+            done();
+        });
+    });
+
+    describe("setRemoteIp function", () => {
+        it("Should change the local port", (done) => {
+            let oldIp = Actuar.ENV.REMOTE_IP;
+            Actuar.setRemoteIp("192.123.345");
+            expect(Actuar.ENV.REMOTE_IP).to.equal("192.123.345");
+            Actuar.setRemoteIp(oldIp);
+            expect(Actuar.ENV.REMOTE_IP).to.equal(oldIp);
+            done();
+        });
     });
 
     describe("setRootDir function", () => {
@@ -54,7 +114,6 @@ describe("Actuar Test", () => {
             done()
         });
         it("Should create a new directory when calling the function", (done) => {
-            const NEW_PATH = resolve(__dirname, '..', '..');
             const exists = existsSync(join(NEW_PATH, Actuar.moduleName));
             expect(exists, `The Path ${NEW_PATH} seems to exist already. Have you cleand up before the test?.`).to.be.false;
             Actuar.setRootDir(NEW_PATH).then(
