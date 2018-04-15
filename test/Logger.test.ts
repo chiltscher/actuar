@@ -1,7 +1,7 @@
 import * as Actuar from "../src/Actuar";
 import { expect } from "chai"
 import { join, resolve } from "path";
-describe("Actuar Logger Test", () => {
+describe("Logger Test", () => {
     let Logger: Actuar.Logger;
     const dirPath = resolve(join(__dirname, "..", ".."));
     before("Reset the Actuar Statistics", (done) => {
@@ -46,9 +46,9 @@ describe("Actuar Logger Test", () => {
         Logger.debug("This is just a test", 14, __filename);
         expect(Actuar.Stats.Outs).to.equal(3);
     });
-    it("Should output the example for GitHub", () => {
-        let Logger = new Actuar.Logger('Server');
-        Logger.error("Unexpected Data", 2, __filename);
-        Logger.warn("Unathorized access!");
-    });
+    // it("Should output the example for GitHub", () => {
+    //     let Logger = new Actuar.Logger('Server');
+    //     Logger.error("Unexpected Data", 2, __filename);
+    //     Logger.warn("Unathorized access!");
+    // });
 });

@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+//#region importing dependencies
 const fs_1 = require("fs");
 const path_1 = require("path");
+//#endregion
+//#region types, enums and interfaces
 exports.moduleName = "actuar";
 var LogLevel;
 (function (LogLevel) {
@@ -9,7 +12,7 @@ var LogLevel;
     LogLevel[LogLevel["WARN"] = 1] = "WARN";
     LogLevel[LogLevel["ERROR"] = 2] = "ERROR";
     LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
-    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR";
+    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR"; // Show all logs, inclusive actuar logs
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 var LogType;
 (function (LogType) {
@@ -30,6 +33,7 @@ var StatInterval;
     StatInterval[StatInterval["Day"] = 1] = "Day";
     StatInterval[StatInterval["Week"] = 2] = "Week";
 })(StatInterval = exports.StatInterval || (exports.StatInterval = {}));
+//#endregion
 var ENV;
 (function (ENV) {
     ENV.REMOTE_IP = "localhost";
@@ -41,7 +45,9 @@ var ENV;
     ENV.ROOT = path_1.resolve(path_1.join(__dirname, exports.moduleName));
 })(ENV = exports.ENV || (exports.ENV = {}));
 fs_1.existsSync(ENV.ROOT) ? null : fs_1.mkdirSync(ENV.ROOT);
+// import Actuar Logger for internal usage
 const Actuar_1 = require("./Actuar");
+//#region general setup and configuration functions
 function setLocalPort(port) {
     ENV.LOCAL_PORT = port;
 }
@@ -94,6 +100,8 @@ function createDirectory(dir) {
     });
 }
 exports.createDirectory = createDirectory;
+//#endregion
+//#region re-exporting modules
 var Logger_1 = require("./Logger/Logger");
 exports.Logger = Logger_1.Logger;
 var Transceiver_1 = require("./ActuarTransceiver/Transceiver");
@@ -104,3 +112,5 @@ var ActuarLog_1 = require("./Logger/ActuarLog");
 exports.ActuarLog = ActuarLog_1.ActuarLog;
 var Stats_1 = require("./Statistics/Stats");
 exports.Stats = Stats_1.Stats;
+//#endregion 
+//# sourceMappingURL=Actuar.js.map

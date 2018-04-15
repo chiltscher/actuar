@@ -5,3 +5,4 @@ class DataLogger {
     }
 }
 exports.DataLogger = DataLogger;
+//# sourceMappingURL=DataLogger.js.map

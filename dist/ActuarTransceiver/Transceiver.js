@@ -40,3 +40,4 @@ Transceiver.socket = dgram.createSocket('udp4');
 Transceiver.server = dgram.createSocket('udp4');
 Transceiver._onLogReceivedCallbacks = [];
 exports.Transceiver = Transceiver;
+//# sourceMappingURL=Transceiver.js.map
