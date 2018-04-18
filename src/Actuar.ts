@@ -2,7 +2,7 @@
 //#region
 import { PathLike, mkdir, existsSync, mkdirSync } from "fs";
 import { resolve, join, basename } from "path";
-import { tmpdir } from 'os';
+import { tmpdir } from "os";
 //#endregion
 
 // * types, enums and interfaces
@@ -22,13 +22,15 @@ export enum LogType {
     Error = "Error",
     Warning = "Warning",
     Debug = "Debug",
-    Log = "Info",
-};
+    Log = "Info"
+}
 export enum DataTypes {
     Table
-};
+}
 export enum StatInterval {
-    Hour, Day, Week
+    Hour,
+    Day,
+    Week
 }
 export interface IActuarLog {
     instance: string;
@@ -54,7 +56,7 @@ export namespace ENV {
     export let LOCAL_PORT: number = 9090;
     export let HTTP_PORT: number = 9191;
     export let LOGLVL: LogLevel = LogLevel.ACTUAR;
-    export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
+    export let DEBUG: boolean = process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1;
     export let ROOT: PathLike = resolve(join(tmpdir(), moduleName));
 }
 
@@ -64,13 +66,13 @@ existsSync(ENV.ROOT) ? null : mkdirSync(ENV.ROOT);
 import { Logger } from "./Actuar";
 
 // * general setup and configuration functions
-//#region 
+//#region
 /**
  * Set the loglevel for all loggers.
  * @default LogLevel.Actuar
- * @param lvl 
+ * @param lvl
  */
-export function setLogLevel(lvl: LogLevel) : void {
+export function setLogLevel(lvl: LogLevel): void {
     ENV.LOGLVL = lvl;
 }
 /**
@@ -78,7 +80,7 @@ export function setLogLevel(lvl: LogLevel) : void {
  * @default 9090
  * @param port The number of the port to listen to.
  */
-export function setLocalPort(port: number) : void {
+export function setLocalPort(port: number): void {
     ENV.LOCAL_PORT = port;
 }
 /**
@@ -86,7 +88,7 @@ export function setLocalPort(port: number) : void {
  * @default 8989
  * @param port The number of the port.
  */
-export function setRemotePort(port: number) : void {
+export function setRemotePort(port: number): void {
     ENV.REMOTE_PORT = port;
 }
 /**
@@ -94,7 +96,7 @@ export function setRemotePort(port: number) : void {
  * @default "localhost"
  * @param ip 
  */
-export function setRemoteIp(ip: string) : void {
+export function setRemoteIp(ip: string): void {
     ENV.REMOTE_IP = ip;
 }
 
@@ -102,7 +104,9 @@ export function setRemoteIp(ip: string) : void {
  * Enables the debug mode of actuar. The default value depends on the arguments of the main process.
  * You can enable the debug mode on startup by passing the argument "--debug" or "-dbg".
  */
-export function enableDebug(): void { ENV.DEBUG = true; };
+export function enableDebug(): void {
+    ENV.DEBUG = true;
+}
 
 /**
  * Returns the absolute path of the actuar root directory.
@@ -122,13 +126,14 @@ export function getRootDir(): PathLike {
 export function setRootDir(dir: PathLike): Promise<void> {
     return new Promise<void>((res, rej) => {
         dir = resolve(dir as string);
-        if(basename(dir) !== moduleName) {
-            dir = join(dir, moduleName)
+        if (basename(dir) !== moduleName) {
+            dir = join(dir, moduleName);
         }
-        createDirectory(dir).then(
-            path => { ENV.ROOT = path; res(); }
-        );
-});
+        createDirectory(dir).then((path) => {
+            ENV.ROOT = path;
+            res();
+        });
+    });
 }
 /**
  * A little helper function to create directories.
@@ -137,16 +142,19 @@ export function setRootDir(dir: PathLike): Promise<void> {
 export function createDirectory(dir: string): Promise<string> {
     return new Promise<string>((res, rej) => {
         if (!existsSync(dir)) {
-            mkdir(dir, err => {
+            mkdir(dir, (err) => {
                 if (err) {
-                    if(ENV.LOGLVL === LogLevel.ACTUAR) {
+                    if (ENV.LOGLVL === LogLevel.ACTUAR) {
                         new Logger(moduleName).unwritable().error(`Can not create directory ${dir}`);
                     }
                     res(tmpdir());
+                } else {
+                    res(dir as string);
                 }
-                else { res(dir as string)  };
             });
-        } else { res(dir as string) };
+        } else {
+            res(dir as string);
+        }
     });
 }
 //#endregion
