@@ -29,4 +29,10 @@ describe("Logger Test", () => {
         counter.increaseVisitors();
         done();
     });
+
+    it("Should print out the file and the line where the error occurs", (done) => {
+        const testLogger: Logger = new Logger('server');
+        testLogger.error("Damn, an error occurred!", 35, __filename);
+        done();
+    });
 });
