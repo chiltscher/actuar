@@ -2,11 +2,14 @@
 //#region
 import { PathLike, mkdir, existsSync, mkdirSync } from "fs";
 import { resolve, join, basename } from "path";
-import { tmpdir } from 'os';
+import { tmpdir } from "os";
 //#endregion
 
 // * types, enums and interfaces
 //#region
+/**
+ * Describes the depth of logging information.
+ */
 export enum LogLevel {
     INFO,
     WARN,
@@ -14,17 +17,20 @@ export enum LogLevel {
     DEBUG,
     ACTUAR // Show all logs, inclusive actuar logs
 }
+
 export enum LogType {
     Error = "Error",
     Warning = "Warning",
     Debug = "Debug",
-    Log = "Info",
-};
+    Log = "Info"
+}
 export enum DataTypes {
     Table
-};
+}
 export enum StatInterval {
-    Hour, Day, Week
+    Hour,
+    Day,
+    Week
 }
 export interface IActuarLog {
     instance: string;
@@ -38,7 +44,10 @@ export interface IActuarLog {
     kindOf?: string;
 }
 //#endregion
-
+/**
+ * Actuar.moduleName
+ * @constant
+ */
 export const moduleName = "actuar";
 
 export namespace Settings {
@@ -71,34 +80,52 @@ export function setRemoteIp(ip: string) : void {
 
 export function enableDebug(): void { Settings.Debug = true; };
 
+/**
+ * Returns the absolute path of the actuar root directory.
+ * Logfiles and plots will be saved in this directory.
+ */
 export function getRootDir(): PathLike {
     return Settings.Root;
 }
+
+/**
+ * Setup a new root directory for logfiles and plots.
+ * If the basename of the path is not "actuar", it will automatically added.
+ * If the path does not exist, it will be created.
+ * @default The temporary directory of the system.
+ * @param dir The new path of the root directory.
+ */
 export function setRootDir(dir: PathLike): Promise<void> {
     return new Promise<void>((res, rej) => {
         dir = resolve(dir as string);
-        if(basename(dir) !== moduleName) {
-            dir = join(dir, moduleName)
+        if (basename(dir) !== moduleName) {
+            dir = join(dir, moduleName);
         }
         createDirectory(dir).then(
             path => { Settings.Root = path; res(); }
         );
 });
 }
-
+/**
+ * A little helper function to create directories.
+ * @param dir A directory path to create.
+ */
 export function createDirectory(dir: string): Promise<string> {
     return new Promise<string>((res, rej) => {
         if (!existsSync(dir)) {
-            mkdir(dir, err => {
+            mkdir(dir, (err) => {
                 if (err) {
                     if(Settings.Level === LogLevel.ACTUAR) {
                         new Logger(moduleName).unwritable().error(`Can not create directory ${dir}`);
                     }
                     res(tmpdir());
+                } else {
+                    res(dir as string);
                 }
-                else { res(dir as string)  };
             });
-        } else { res(dir as string) };
+        } else {
+            res(dir as string);
+        }
     });
 }
 //#endregion
@@ -106,7 +133,7 @@ export function createDirectory(dir: string): Promise<string> {
 //#region re-exporting modules
 export { Logger } from "./Logger/Logger";
 export { Transceiver } from "./ActuarTransceiver/Transceiver";
-export { Server } from "./Server/Server";
+export { Server } from "./HttpServer/HttpServer";
 export { ActuarLog } from "./Logger/ActuarLog";
 export { Stats } from "./Statistics/Stats";
 //#endregion
