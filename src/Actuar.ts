@@ -41,38 +41,38 @@ export interface IActuarLog {
 
 export const moduleName = "actuar";
 
-export namespace ENV {
-    export let REMOTE_IP: string = "localhost";
-    export let REMOTE_PORT: number = 8989;
-    export let LOCAL_PORT: number = 9090;
-    export let HTTP_PORT: number = 9191;
-    export let LOGLVL: LogLevel = LogLevel.ACTUAR;
-    export let DEBUG: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    export let ROOT: PathLike = resolve(join(tmpdir(), moduleName));
+export namespace Settings {
+    export let RemoteIp: string = "localhost";
+    export let RemotePort: number = 8989;
+    export let LocalPort: number = 9090;
+    export let HttpPort: number = 9191;
+    export let Level: LogLevel = LogLevel.ACTUAR;
+    export let Debug: boolean = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
+    export let Root: PathLike = resolve(join(tmpdir(), moduleName));
 }
 
-existsSync(ENV.ROOT) ? null : mkdirSync(ENV.ROOT);
+existsSync(Settings.Root) ? null : mkdirSync(Settings.Root);
 
 // import Actuar Logger for internal usage
 import { Logger } from "./Actuar";
 
 //#region general setup and configuration functions
 export function setLocalPort(port: number) : void {
-    ENV.LOCAL_PORT = port;
+    Settings.LocalPort = port;
 }
 
 export function setRemotePort(port: number) : void {
-    ENV.REMOTE_PORT = port;
+    Settings.RemotePort = port;
 }
 
 export function setRemoteIp(ip: string) : void {
-    ENV.REMOTE_IP = ip;
+    Settings.RemoteIp = ip;
 }
 
-export function enableDebug(): void { ENV.DEBUG = true; };
+export function enableDebug(): void { Settings.Debug = true; };
 
 export function getRootDir(): PathLike {
-    return ENV.ROOT;
+    return Settings.Root;
 }
 export function setRootDir(dir: PathLike): Promise<void> {
     return new Promise<void>((res, rej) => {
@@ -81,7 +81,7 @@ export function setRootDir(dir: PathLike): Promise<void> {
             dir = join(dir, moduleName)
         }
         createDirectory(dir).then(
-            path => { ENV.ROOT = path; res(); }
+            path => { Settings.Root = path; res(); }
         );
 });
 }
@@ -91,7 +91,7 @@ export function createDirectory(dir: string): Promise<string> {
         if (!existsSync(dir)) {
             mkdir(dir, err => {
                 if (err) {
-                    if(ENV.LOGLVL === LogLevel.ACTUAR) {
+                    if(Settings.Level === LogLevel.ACTUAR) {
                         new Logger(moduleName).unwritable().error(`Can not create directory ${dir}`);
                     }
                     res(tmpdir());

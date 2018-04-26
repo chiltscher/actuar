@@ -1,4 +1,4 @@
-import { ENV, IActuarLog, LogType, LogLevel, Stats, createDirectory } from '../Actuar';
+import { Settings, IActuarLog, LogType, LogLevel, Stats, createDirectory } from '../Actuar';
 import { ActuarLog } from './ActuarLog';
 import { appendFile, existsSync } from 'fs';
 import { join } from 'path';
@@ -21,7 +21,7 @@ export class Logger {
         this._name = name;
     }
     public static get DIR(): string { 
-        return join(ENV.ROOT as string, "logfiles") 
+        return join(Settings.Root as string, "logfiles") 
     };
     public static readonly EXT: string = ".aLog";
     public static writeOut(log: ActuarLog) {
@@ -29,7 +29,7 @@ export class Logger {
             createDirectory(Logger.DIR).then(() => Logger.writeOut(log));
         } else {
             let FILE = join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
-            appendFile(FILE, log.toJsonString() + ",\r\n",()=>{});
+            appendFile(FILE, log.stringify() + ",\r\n",()=>{});
         }
     }
 
@@ -42,7 +42,7 @@ export class Logger {
     }
 
     public log(message: string): void {
-        if(ENV.LOGLVL < LogLevel.INFO) return;
+        if(Settings.Level < LogLevel.INFO) return;
         let log: IActuarLog = {
             muted: this._muted,
             write: this._write,
@@ -54,12 +54,12 @@ export class Logger {
         const aLog = new ActuarLog(log);
         if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
-        if (!this._muted) console.log(aLog.toString());
+        if (!this._muted) console.log(aLog.getMessage());
         Stats.Logs.inc();
     }
 
     public warn(message: string, line?: number, file?: string): void {
-        if (ENV.LOGLVL < LogLevel.WARN) return;
+        if (Settings.Level < LogLevel.WARN) return;
         let log: IActuarLog = {
             muted: this._muted,
             write: this._write,
@@ -73,12 +73,12 @@ export class Logger {
         const aLog = new ActuarLog(log);
         if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
-        if (!this._muted) console.log(aLog.toString());
+        if (!this._muted) console.log(aLog.getMessage());
         Stats.Warnings.inc();
     }
 
     public error(message: string, line?: number, file?: string): void {
-        if (ENV.LOGLVL < LogLevel.ERROR) return;
+        if (Settings.Level < LogLevel.ERROR) return;
         let log : IActuarLog = {
             muted: this._muted,
             write: this._write,
@@ -91,12 +91,12 @@ export class Logger {
         }
         const aLog = new ActuarLog(log);
         if(this._write) Logger.writeOut(aLog);
-        if(!this._muted) console.log(aLog.toString());
+        if(!this._muted) console.log(aLog.getMessage());
         Stats.Errors.inc();
     }
 
     public debug(message: string, line?: number, file?: string): void {
-        if (ENV.LOGLVL < LogLevel.DEBUG || !ENV.DEBUG) return;
+        if (Settings.Level < LogLevel.DEBUG || !Settings.Debug) return;
         let log: IActuarLog = {
             muted: this._muted,
             write: this._write,
@@ -110,6 +110,6 @@ export class Logger {
         const aLog = new ActuarLog(log);
         if(this._remote) Transceiver.sendLog(aLog);
         if(this._write) Logger.writeOut(aLog);
-        if (!this._muted) console.log(aLog.toString());
+        if (!this._muted) console.log(aLog.getMessage());
     }
 }

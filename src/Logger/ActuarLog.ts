@@ -53,7 +53,7 @@ class ActuarLog {
             write: this.write
         }
     }
-    public toString() : string {
+    public getMessage() : string {
         let error = "";
         if(this.line && this.file){
             error = `(${this.file}:${this.line})`;
@@ -61,7 +61,7 @@ class ActuarLog {
         return this.colorize(`[${ this.timestamp.toLocaleTimeString()}] - ${ this.instance } ${this.type.toUpperCase()} : ${ this.message } ${ error }`);
         // [ 08:20:23 ] - APP : Unexpected Data (/path/to/your/application.js:52)
     }
-    public toJsonString() : string {
+    public stringify() : string {
         return JSON.stringify(this.toJson());
     }
     public static fromBuffer(buffer: Buffer) : ActuarLog{

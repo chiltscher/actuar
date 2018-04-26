@@ -1,5 +1,5 @@
 import { readdir, readFile } from "fs";
-import { ENV, Logger, IActuarLog, ActuarLog, LogLevel, moduleName } from "../Actuar";
+import { Settings, Logger, IActuarLog, ActuarLog, LogLevel, moduleName } from "../Actuar";
 import { resolve, extname, join } from "path";
 import * as express from "express";
 
@@ -11,7 +11,7 @@ class Server {
         return new Promise <fileList>((res, rej) => {
             readdir(Logger.DIR, (err, files) => {
                 if(err) {
-                    if (ENV.LOGLVL === LogLevel.ACTUAR) {
+                    if (Settings.Level === LogLevel.ACTUAR) {
                         new Logger(moduleName).unwritable().error("Can not read logfiles directory");
                     }
                     rej();
@@ -34,7 +34,7 @@ class Server {
         return new Promise<IActuarLog[]>((res, rej) => {
             readFile(path, (err, content) => {
                 if (err) {
-                    if (ENV.LOGLVL === LogLevel.ACTUAR) {                                    
+                    if (Settings.Level === LogLevel.ACTUAR) {                                    
                         new Logger(moduleName).unwritable().error(`Can not read logfile ${path}`);
                     }
                     rej();
@@ -80,7 +80,7 @@ class Server {
                 });
             });
         });
-        app.listen(ENV.HTTP_PORT);
+        app.listen(Settings.HttpPort);
     }
 }
 

@@ -36,72 +36,72 @@ describe("Actuar Test", () => {
         done();
     });
 
-    it("Should export a namespace ENV", (done) => {
-        expect(Actuar.ENV).to.be.not.null;
+    it("Should export a namespace Settings", (done) => {
+        expect(Actuar.Settings).to.be.not.null;
         done();
     });
 
-    it("Should have the default remote_ip 'localhost'", (done) => {
-        expect(Actuar.ENV.REMOTE_IP).to.equal("localhost");
+    it("Should have the default RemoteIp 'localhost'", (done) => {
+        expect(Actuar.Settings.RemoteIp).to.equal("localhost");
         done();
     });
 
     it("Should have the default remote-, local-, and http-port", (done) => {
-        expect(Actuar.ENV.REMOTE_PORT, `Remote port is ${Actuar.ENV.REMOTE_PORT} instead of 8989`).to.equal(8989);
-        expect(Actuar.ENV.LOCAL_PORT, `Local port is ${Actuar.ENV.LOCAL_PORT} instead of 9090`).to.equal(9090);
-        expect(Actuar.ENV.HTTP_PORT, `HTTP port is ${Actuar.ENV.HTTP_PORT} instead of 9191`).to.equal(9191);
+        expect(Actuar.Settings.RemotePort, `Remote port is ${Actuar.Settings.RemotePort} instead of 8989`).to.equal(8989);
+        expect(Actuar.Settings.LocalPort, `Local port is ${Actuar.Settings.LocalPort} instead of 9090`).to.equal(9090);
+        expect(Actuar.Settings.HttpPort, `HTTP port is ${Actuar.Settings.HttpPort} instead of 9191`).to.equal(9191);
         done();
     });
 
-    it("Should have a default root-directory for saving data", (done) => {
+    it("Should have a default Root-directory for saving data", (done) => {
         const dir = Actuar.getRootDir();
-        expect(dir, `Root-Dir is ${dir} instead of ${Actuar.ENV.ROOT}`).to.equal(Actuar.ENV.ROOT);
+        expect(dir, `Root-Dir is ${dir} instead of ${Actuar.Settings.Root}`).to.equal(Actuar.Settings.Root);
         done();
     });
 
     it("Debug mode should be disabled by default", (done) => {
-        expect(Actuar.ENV.DEBUG).to.be.false;
+        expect(Actuar.Settings.Debug).to.be.false;
         done();
     });
 
     describe("enableDebug function", ()=> {
-        it("Should enable the debug mode", (done) => {
+        it("Should enable the Debug mode", (done) => {
             Actuar.enableDebug();
-            expect(Actuar.ENV.DEBUG).to.be.true;
-            Actuar.ENV.DEBUG = false;
-            expect(Actuar.ENV.DEBUG).to.be.false;
+            expect(Actuar.Settings.Debug).to.be.true;
+            Actuar.Settings.Debug = false;
+            expect(Actuar.Settings.Debug).to.be.false;
             done();
         });
     });
 
     describe("setLocalPort function", () => {
         it("Should change the local port", (done) => {
-            let oldPort = Actuar.ENV.LOCAL_PORT;
+            let oldPort = Actuar.Settings.LocalPort;
             Actuar.setLocalPort(9876);
-            expect(Actuar.ENV.LOCAL_PORT).to.equal(9876);
+            expect(Actuar.Settings.LocalPort).to.equal(9876);
             Actuar.setLocalPort(oldPort);
-            expect(Actuar.ENV.LOCAL_PORT).to.equal(oldPort);
+            expect(Actuar.Settings.LocalPort).to.equal(oldPort);
             done();
         });
     });
     describe("setRemotePort function", () => {
         it("Should change the local port", (done) => {
-            let oldPort = Actuar.ENV.REMOTE_PORT;
+            let oldPort = Actuar.Settings.RemotePort;
             Actuar.setRemotePort(9876);
-            expect(Actuar.ENV.REMOTE_PORT).to.equal(9876);
+            expect(Actuar.Settings.RemotePort).to.equal(9876);
             Actuar.setRemotePort(oldPort);
-            expect(Actuar.ENV.REMOTE_PORT).to.equal(oldPort);
+            expect(Actuar.Settings.RemotePort).to.equal(oldPort);
             done();
         });
     });
 
     describe("setRemoteIp function", () => {
         it("Should change the local port", (done) => {
-            let oldIp = Actuar.ENV.REMOTE_IP;
+            let oldIp = Actuar.Settings.RemoteIp;
             Actuar.setRemoteIp("192.123.345");
-            expect(Actuar.ENV.REMOTE_IP).to.equal("192.123.345");
+            expect(Actuar.Settings.RemoteIp).to.equal("192.123.345");
             Actuar.setRemoteIp(oldIp);
-            expect(Actuar.ENV.REMOTE_IP).to.equal(oldIp);
+            expect(Actuar.Settings.RemoteIp).to.equal(oldIp);
             done();
         });
     });

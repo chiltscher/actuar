@@ -1,13 +1,13 @@
 import * as dgram from 'dgram';
-import { ActuarLog, ENV, Logger } from '../Actuar';
+import { ActuarLog, Settings, Logger } from '../Actuar';
 
 class Transceiver {
     private static readonly socket: dgram.Socket = dgram.createSocket('udp4');
     private static readonly server: dgram.Socket = dgram.createSocket('udp4');
 
     public static sendLog(log: ActuarLog) {
-        let message = Buffer.from(log.toJsonString());
-        this.socket.send(message, 0, message.length, ENV.REMOTE_PORT, ENV.REMOTE_IP);
+        let message = Buffer.from(log.stringify());
+        this.socket.send(message, 0, message.length, Settings.RemotePort, Settings.RemoteIp);
     }
 
     public static logRemotes() {
@@ -20,7 +20,7 @@ class Transceiver {
             let aLog = ActuarLog.fromBuffer(msg);
             let jLog = aLog.toJson();
             if (jLog.write) Logger.writeOut(aLog);
-            if (!jLog.muted) console.log(aLog.toString());
+            if (!jLog.muted) console.log(aLog.getMessage());
             this.fireLogReceivedCallbacks(aLog);
         });
 
@@ -29,7 +29,7 @@ class Transceiver {
             new Logger("actuar").unwritable().log(`server listening ${address.address}:${address.port}`);
         });
 
-        this.server.bind(ENV.LOCAL_PORT);
+        this.server.bind(Settings.LocalPort);
     }
     private static fireLogReceivedCallbacks(aLog: ActuarLog) : void {
         this._onLogReceivedCallbacks.forEach(callback => {

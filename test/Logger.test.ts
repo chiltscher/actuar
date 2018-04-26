@@ -19,13 +19,13 @@ describe("Logger Test", () => {
     });
 
     it("Debug mode should be false", (done) => {
-        expect(Actuar.ENV.DEBUG).to.be.false;
+        expect(Actuar.Settings.Debug).to.be.false;
         done()
     });
 
     it("Debug mode should be enabled", (done) => {
         Actuar.enableDebug();
-        expect(Actuar.ENV.DEBUG).to.be.true;
+        expect(Actuar.Settings.Debug).to.be.true;
         done()
     });
     
