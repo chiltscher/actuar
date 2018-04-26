@@ -80,6 +80,9 @@ export function setRemoteIp(ip: string) : void {
 
 export function enableDebug(): void { Settings.Debug = true; };
 
+export function setLogLevel(lvl: LogLevel) : void{
+    Settings.Level = lvl;
+}
 /**
  * Returns the absolute path of the actuar root directory.
  * Logfiles and plots will be saved in this directory.

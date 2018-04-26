@@ -1,5 +1,5 @@
 import * as dgram from 'dgram';
-import { ActuarLog, Settings, Logger } from '../Actuar';
+import { ActuarLog, Settings, Logger, LogLevel } from '../Actuar';
 
 class Transceiver {
     private static readonly socket: dgram.Socket = dgram.createSocket('udp4');
@@ -12,6 +12,7 @@ class Transceiver {
 
     public static logRemotes() {
         this.server.on('error', (err) => {
+            if (Settings.Level < LogLevel.ACTUAR) return
             new Logger("actuar").unwritable().error(`Transceiver-Server error ${err.stack}`);
             this.server.close();
         });
@@ -26,6 +27,7 @@ class Transceiver {
 
         this.server.on('listening', () => {
             const address = this.server.address();
+            if(Settings.Level < LogLevel.ACTUAR) return
             new Logger("actuar").unwritable().log(`server listening ${address.address}:${address.port}`);
         });
 
