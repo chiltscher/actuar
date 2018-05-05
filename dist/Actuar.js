@@ -1,20 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// * importing dependencies
-//#region
 const fs_1 = require("fs");
 const path_1 = require("path");
 const os_1 = require("os");
-//#endregion
-// * types, enums and interfaces
-//#region
 var LogLevel;
 (function (LogLevel) {
     LogLevel[LogLevel["INFO"] = 0] = "INFO";
     LogLevel[LogLevel["WARN"] = 1] = "WARN";
     LogLevel[LogLevel["ERROR"] = 2] = "ERROR";
     LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
-    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR"; // Show all logs, inclusive actuar logs
+    LogLevel[LogLevel["ACTUAR"] = 4] = "ACTUAR";
 })(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
 var LogType;
 (function (LogType) {
@@ -23,51 +18,50 @@ var LogType;
     LogType["Debug"] = "Debug";
     LogType["Log"] = "Info";
 })(LogType = exports.LogType || (exports.LogType = {}));
-;
 var DataTypes;
 (function (DataTypes) {
     DataTypes[DataTypes["Table"] = 0] = "Table";
 })(DataTypes = exports.DataTypes || (exports.DataTypes = {}));
-;
 var StatInterval;
 (function (StatInterval) {
     StatInterval[StatInterval["Hour"] = 0] = "Hour";
     StatInterval[StatInterval["Day"] = 1] = "Day";
     StatInterval[StatInterval["Week"] = 2] = "Week";
 })(StatInterval = exports.StatInterval || (exports.StatInterval = {}));
-//#endregion
 exports.moduleName = "actuar";
-var ENV;
-(function (ENV) {
-    ENV.REMOTE_IP = "localhost";
-    ENV.REMOTE_PORT = 8989;
-    ENV.LOCAL_PORT = 9090;
-    ENV.HTTP_PORT = 9191;
-    ENV.LOGLVL = LogLevel.ACTUAR;
-    ENV.DEBUG = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
-    ENV.ROOT = path_1.resolve(path_1.join(os_1.tmpdir(), exports.moduleName));
-})(ENV = exports.ENV || (exports.ENV = {}));
-fs_1.existsSync(ENV.ROOT) ? null : fs_1.mkdirSync(ENV.ROOT);
-// import Actuar Logger for internal usage
+var Settings;
+(function (Settings) {
+    Settings.RemoteIp = "localhost";
+    Settings.RemotePort = 8989;
+    Settings.LocalPort = 9090;
+    Settings.HttpPort = 9191;
+    Settings.Level = LogLevel.ACTUAR;
+    Settings.Debug = (process.argv.indexOf("-dbg") !== -1 || process.argv.indexOf("--debug") !== -1);
+    Settings.Root = path_1.resolve(path_1.join(os_1.tmpdir(), exports.moduleName));
+})(Settings = exports.Settings || (exports.Settings = {}));
+fs_1.existsSync(Settings.Root) ? null : fs_1.mkdirSync(Settings.Root);
 const Actuar_1 = require("./Actuar");
-//#region general setup and configuration functions
 function setLocalPort(port) {
-    ENV.LOCAL_PORT = port;
+    Settings.LocalPort = port;
 }
 exports.setLocalPort = setLocalPort;
 function setRemotePort(port) {
-    ENV.REMOTE_PORT = port;
+    Settings.RemotePort = port;
 }
 exports.setRemotePort = setRemotePort;
 function setRemoteIp(ip) {
-    ENV.REMOTE_IP = ip;
+    Settings.RemoteIp = ip;
 }
 exports.setRemoteIp = setRemoteIp;
-function enableDebug() { ENV.DEBUG = true; }
+function enableDebug() { Settings.Debug = true; }
 exports.enableDebug = enableDebug;
 ;
+function setLogLevel(lvl) {
+    Settings.Level = lvl;
+}
+exports.setLogLevel = setLogLevel;
 function getRootDir() {
-    return ENV.ROOT;
+    return Settings.Root;
 }
 exports.getRootDir = getRootDir;
 function setRootDir(dir) {
@@ -76,16 +70,16 @@ function setRootDir(dir) {
         if (path_1.basename(dir) !== exports.moduleName) {
             dir = path_1.join(dir, exports.moduleName);
         }
-        createDirectory(dir).then(path => { ENV.ROOT = path; res(); });
+        createDirectory(dir).then(path => { Settings.Root = path; res(); });
     });
 }
 exports.setRootDir = setRootDir;
 function createDirectory(dir) {
     return new Promise((res, rej) => {
         if (!fs_1.existsSync(dir)) {
-            fs_1.mkdir(dir, err => {
+            fs_1.mkdir(dir, (err) => {
                 if (err) {
-                    if (ENV.LOGLVL === LogLevel.ACTUAR) {
+                    if (Settings.Level === LogLevel.ACTUAR) {
                         new Actuar_1.Logger(exports.moduleName).unwritable().error(`Can not create directory ${dir}`);
                     }
                     res(os_1.tmpdir());
@@ -93,27 +87,21 @@ function createDirectory(dir) {
                 else {
                     res(dir);
                 }
-                ;
             });
         }
         else {
             res(dir);
         }
-        ;
     });
 }
 exports.createDirectory = createDirectory;
-//#endregion
-//#region re-exporting modules
 var Logger_1 = require("./Logger/Logger");
 exports.Logger = Logger_1.Logger;
 var Transceiver_1 = require("./ActuarTransceiver/Transceiver");
 exports.Transceiver = Transceiver_1.Transceiver;
-var Server_1 = require("./Server/Server");
-exports.Server = Server_1.Server;
+var HttpServer_1 = require("./HttpServer/HttpServer");
+exports.Server = HttpServer_1.Server;
 var ActuarLog_1 = require("./Logger/ActuarLog");
 exports.ActuarLog = ActuarLog_1.ActuarLog;
 var Stats_1 = require("./Statistics/Stats");
 exports.Stats = Stats_1.Stats;
-//#endregion 
-//# sourceMappingURL=Actuar.js.map

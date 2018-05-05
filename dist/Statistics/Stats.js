@@ -116,4 +116,3 @@ Stats._minuteChangedCallback = () => { };
 Stats._dayChangedCallback = () => { };
 Stats._hourChangedCallback = () => { };
 exports.Stats = Stats;
-//# sourceMappingURL=Stats.js.map

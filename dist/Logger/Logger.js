@@ -7,21 +7,38 @@ const path_1 = require("path");
 const Actuar_2 = require("../Actuar");
 class Logger {
     constructor(name) {
-        // protected static DBG: boolean = false;
-        this._name = 'logger';
+        this._name = "logger";
         this._muted = false;
         this._write = true;
         this._remote = false;
         this._name = name;
     }
-    mute() { this._muted = true; return this; }
-    unmute() { this._muted = false; return this; }
-    writable() { this._write = true; return this; }
-    unwritable() { this._write = false; return this; }
-    remote() { this._remote = true; return this; }
-    unremote() { this._remote = false; return this; }
+    mute() {
+        this._muted = true;
+        return this;
+    }
+    unmute() {
+        this._muted = false;
+        return this;
+    }
+    writable() {
+        this._write = true;
+        return this;
+    }
+    unwritable() {
+        this._write = false;
+        return this;
+    }
+    remote() {
+        this._remote = true;
+        return this;
+    }
+    unremote() {
+        this._remote = false;
+        return this;
+    }
     static get DIR() {
-        return path_1.join(Actuar_1.ENV.ROOT, "logfiles");
+        return path_1.join(Actuar_1.Settings.Root, "logfiles");
     }
     ;
     static writeOut(log) {
@@ -30,22 +47,26 @@ class Logger {
         }
         else {
             let FILE = path_1.join(Logger.DIR, new Date().toLocaleDateString()) + Logger.EXT;
-            fs_1.appendFile(FILE, log.toJsonString() + ",\r\n", () => { });
+            fs_1.appendFile(FILE, log.stringify() + ",\r\n", () => { });
         }
     }
     get name() {
         return this._name;
     }
-    get $name() {
-        return this._name.toUpperCase();
+    get instance() {
+        let instance = this._name.toUpperCase();
+        while (instance.includes(" ")) {
+            instance = instance.replace(" ", "-");
+        }
+        return instance;
     }
     log(message) {
-        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.INFO)
+        if (Actuar_1.Settings.Level < Actuar_1.LogLevel.INFO)
             return;
         let log = {
             muted: this._muted,
             write: this._write,
-            instance: this.$name,
+            instance: this.instance,
             timestamp: new Date(),
             message: message,
             type: Actuar_1.LogType.Log
@@ -56,16 +77,16 @@ class Logger {
         if (this._write)
             Logger.writeOut(aLog);
         if (!this._muted)
-            console.log(aLog.toString());
+            console.log(aLog.getMessage());
         Actuar_1.Stats.Logs.inc();
     }
     warn(message, line, file) {
-        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.WARN)
+        if (Actuar_1.Settings.Level < Actuar_1.LogLevel.WARN)
             return;
         let log = {
             muted: this._muted,
             write: this._write,
-            instance: this.$name,
+            instance: this.instance,
             timestamp: new Date(),
             line: line,
             file: file,
@@ -78,16 +99,16 @@ class Logger {
         if (this._write)
             Logger.writeOut(aLog);
         if (!this._muted)
-            console.log(aLog.toString());
+            console.log(aLog.getMessage());
         Actuar_1.Stats.Warnings.inc();
     }
     error(message, line, file) {
-        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.ERROR)
+        if (Actuar_1.Settings.Level < Actuar_1.LogLevel.ERROR)
             return;
         let log = {
             muted: this._muted,
             write: this._write,
-            instance: this.$name,
+            instance: this.instance,
             timestamp: new Date(),
             line: line,
             file: file,
@@ -98,16 +119,16 @@ class Logger {
         if (this._write)
             Logger.writeOut(aLog);
         if (!this._muted)
-            console.log(aLog.toString());
+            console.log(aLog.getMessage());
         Actuar_1.Stats.Errors.inc();
     }
     debug(message, line, file) {
-        if (Actuar_1.ENV.LOGLVL < Actuar_1.LogLevel.DEBUG || !Actuar_1.ENV.DEBUG)
+        if (Actuar_1.Settings.Level < Actuar_1.LogLevel.DEBUG || !Actuar_1.Settings.Debug)
             return;
         let log = {
             muted: this._muted,
             write: this._write,
-            instance: this.$name,
+            instance: this.instance,
             timestamp: new Date(),
             line: line,
             file: file,
@@ -120,9 +141,8 @@ class Logger {
         if (this._write)
             Logger.writeOut(aLog);
         if (!this._muted)
-            console.log(aLog.toString());
+            console.log(aLog.getMessage());
     }
 }
 Logger.EXT = ".aLog";
 exports.Logger = Logger;
-//# sourceMappingURL=Logger.js.map
