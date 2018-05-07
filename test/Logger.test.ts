@@ -28,7 +28,7 @@ describe("Logger Test", () => {
         expect(Actuar.Settings.Debug).to.be.true;
         done()
     });
-    
+
 
     it("Should throw no error when logging (there should be no visible output because its muted)", () => {
         Logger.mute();
@@ -37,6 +37,21 @@ describe("Logger Test", () => {
         Logger.error("This is just a test", 13, __filename);
         Logger.debug("This is just a test", 14, __filename);
         expect(Actuar.Stats.Outs).to.equal(3);
+    });
+
+    it("Should be possible to extend the logger class", (done) => {
+        class User extends Actuar.Logger {
+            public name: string;
+            constructor(name:string){
+                super(name);
+            }
+            public greet(msg):void{
+                this.log(msg);
+            }
+        }
+        const me = new User("Christian");
+        me.greet("Hey guys!");
+        done();
     });
     // it("Should output the example for GitHub", () => {
     //     let Logger = new Actuar.Logger('Server');
