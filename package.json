@@ -3,6 +3,7 @@
   "version": "1.1.1",
   "description": "A logger that provides many options to log data and informations",
   "main": "./dist/Actuar.js",
+  "typings": "./dist/Actuar.d.ts",
   "scripts": {
     "pub": "tsc -p ./tsconfig.publish.json && npm run test",
     "build": "tsc -p ./tsconfig.json",

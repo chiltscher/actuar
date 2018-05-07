@@ -34,7 +34,7 @@ class Server {
         return new Promise<IActuarLog[]>((res, rej) => {
             readFile(path, (err, content) => {
                 if (err) {
-                    if (Settings.Level === LogLevel.ACTUAR) {                                    
+                    if (Settings.Level === LogLevel.ACTUAR) {
                         new Logger(moduleName).unwritable().error(`Can not read logfile ${path}`);
                     }
                     rej();
@@ -62,14 +62,14 @@ class Server {
         const app = this.app;
         app.set('view engine', 'pug');
 
-        app.get('/favicon.ico', (req, res, next) => {
+        app.get('/favicon.ico', (req: express.Request, res: express.Response, next: express.NextFunction) => {
             res.end();
         });
-        app.get('/', (req, res, next) => {
+        app.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
              let today = new Date().toLocaleDateString();
              res.redirect(`/${today}`);
         });
-        app.get('/:date', (req, res, next) => {
+        app.get('/:date', (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let date = req.params.date;
             that.getLogFiles().then((files) => {
                 const file = `${date}.aLog`;
