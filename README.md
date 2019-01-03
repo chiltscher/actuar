@@ -1,4 +1,6 @@
-# Actuar
+# Actuar 
+[![Build Status](https://travis-ci.org/chiltscher/actuar.svg?branch=master)](https://travis-ci.org/chiltscher/actuar)
+
 A Node.js module that provides colorized console outputs and more
 
 ## Installation
