@@ -26,7 +26,7 @@ class Transceiver {
         });
 
         this.server.on('listening', () => {
-            const address = this.server.address();
+            const address = this.server.address() as AddressInfo;
             if(Settings.Level < LogLevel.ACTUAR) return
             new Logger("actuar").unwritable().log(`server listening ${address.address}:${address.port}`);
         });
